@@ -15,14 +15,15 @@
   @include('admin/includes/header')
   @include('admin/includes/aside')
   
+
   <script>
     document.addEventListener('alpine:init', () => {
-        Alpine.store('aside', {
-          isOpen: false,
-          toggle() {
-                this.isOpen = ! this.isOpen
-            }
-        })
+      Alpine.store('aside', {
+        isOpen: Alpine.$persist(true),
+        toggle() {
+          this.isOpen = !this.isOpen
+        }
+      })
     })
   </script>
   @vite('resources/js/app.js')
