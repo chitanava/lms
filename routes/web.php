@@ -17,10 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/admin/dashboard-legacy', function () {
-    return view('admin.dashboard-legacy.index');
-});
-
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard.index');
 })->name('dashboard');
+
+Route::get('/admin/pages', function () {
+    return view('admin.pages.index');
+})->name('pages');

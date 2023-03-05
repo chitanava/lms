@@ -5,7 +5,3 @@
 :root {
   --nav-size:300px;
 }
-
-[x-cloak]{
-  display: none!important;
-}
