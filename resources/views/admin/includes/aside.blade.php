@@ -1,4 +1,22 @@
-<aside x-data :class="{'-translate-x-[var(--nav-size)]' : !$store.aside.isOpen}" x-cloak
+{{-- <aside x-data :class="{'-translate-x-[var(--nav-size)]' : !$store.aside.isOpen}" x-cloak
+  class="transition-all duration-300 ease-in-out fixed w-[var(--nav-size)] h-screen bg-white shadow-2xl left-0 top-[70px] before:content-[''] before:absolute before:w-2/3 before:h-px before:bg-slate-500 before:-top-px before:left-0 before:right-0 before:mx-auto before:bg-gradient-to-r before:from-gray-200 before:via-purple-700 before:to-gray-200"> --}}
+{{-- <aside @resize.window.debounce.200="
+  console.log('aaa');
+  $watch('$store.aside.isOpen', (value, oldValue) => console.log('bbb', value, oldValue));
+  window.innerWidth < 728 ? $store.aside.isOpen = false : $store.aside.isOpen = true
+  " x-data :class="{'-translate-x-[var(--nav-size)]' : !$store.aside.isOpen}" x-cloak
+  class="transition-all duration-300 ease-in-out fixed w-[var(--nav-size)] h-screen bg-white shadow-2xl left-0 top-[70px] before:content-[''] before:absolute before:w-2/3 before:h-px before:bg-slate-500 before:-top-px before:left-0 before:right-0 before:mx-auto before:bg-gradient-to-r before:from-gray-200 before:via-purple-700 before:to-gray-200"> --}}
+  <aside x-data x-cloak :class="
+    if(!isMobile){
+      if(!open){
+        return '-translate-x-[var(--nav-size)]'
+      }
+    } else {
+      if(!openOnMobile){
+        return '-translate-x-[var(--nav-size)]'
+      }
+    }
+  "
   class="transition-all duration-300 ease-in-out fixed w-[var(--nav-size)] h-screen bg-white shadow-2xl left-0 top-[70px] before:content-[''] before:absolute before:w-2/3 before:h-px before:bg-slate-500 before:-top-px before:left-0 before:right-0 before:mx-auto before:bg-gradient-to-r before:from-gray-200 before:via-purple-700 before:to-gray-200">
   <nav class="text-sm px-4 py-4 ">
     <ul>

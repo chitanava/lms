@@ -1,5 +1,5 @@
 <header class="fixed w-full h-[70px] bg-white top-0 left-0 border-b border-gray-200 flex items-center px-8">
-  <button x-data @click="$store.aside.toggle()"
+  {{-- <button x-data @click="$store.aside.toggle()"
     class="w-10 h-10 rounded-full flex justify-center items-center hover:bg-gray-50">
     <svg x-cloak x-show="$store.aside.isOpen" class="w-8 h-8 text-purple-700" xmlns="http://www.w3.org/2000/svg" fill="none"
       viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -9,10 +9,22 @@
       viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
       <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
     </svg>
-  </button>
+  </button> --}}
+  <button x-data @click="toggle()"
+  class="w-10 h-10 rounded-full flex justify-center items-center hover:bg-gray-50">
+  <svg x-cloak x-show="isMobile ? openOnMobile : open" class="w-8 h-8 text-purple-700" xmlns="http://www.w3.org/2000/svg" fill="none"
+    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
+  </svg>
+  <svg x-cloak x-show="isMobile ? !openOnMobile : !open" class="w-8 h-8 text-purple-700" xmlns="http://www.w3.org/2000/svg" fill="none"
+    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+  </svg>
+</button>
+  <span class="ml-4 font-semibold italic text-3xl">LMS</span>
   <div class="flex relative flex-1 justify-end" x-data={open:false}>
     <button @click="open = !open" class="w-10 h-10 rounded-full text-white bg-gray-900 flex justify-center items-center"><span class="text-sm font-semibold">NC</span></button>
-    <div x-transition @click.outside="open = false" x-show="open" class="min-w-[250px] absolute top-full right-0 mt-1 bg-white rounded-lg border-gray-200 border shadow-sm text-sm">
+    <div x-transition @click.outside="open = false" x-show="open" class="min-w-[250px] absolute top-full right-0 mt-1 bg-white rounded-lg border-gray-200 border shadow-sm text-sm" x-cloak>
       <div class="p-4 border-b border-b-gray-200">
         <p class="font-semibold">Nika Chitanava</p>
         <p class="text-xs text-gray-400">chitanava@gmail.com</p>
