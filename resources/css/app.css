@@ -6,3 +6,9 @@
   --nav-size:300px;
   --header-height: 70px;
 }
+.btn{
+  @apply text-sm py-2 px-4 shadow rounded-lg 
+}
+.btn-primary{
+  @apply bg-purple-700 hover:bg-purple-500 focus:ring-2 focus:ring-white focus:ring-inset focus:ring-offset-2 focus:ring-offset-purple-500 text-purple-50
+}

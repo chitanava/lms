@@ -8,5 +8,7 @@
 @endsection
 
 @section('content')
-<x-admin.page-header title="Pages"/>
+<x-admin.page-header title="Pages">
+  <a href="#" class="btn btn-primary">New page</a>
+</x-admin.page-header>
 @endsection
