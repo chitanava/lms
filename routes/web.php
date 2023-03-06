@@ -17,10 +17,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard.index');
-})->name('dashboard');
-
-Route::get('/admin/pages', function () {
-    return view('admin.pages.index');
-})->name('pages');
+Route::name('admin.')->prefix('admin')->group(function(){
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard.index');
+    })->name('dashboard');
+    
+    Route::get('/pages', function () {
+        return view('admin.pages.index');
+    })->name('pages');
+});
