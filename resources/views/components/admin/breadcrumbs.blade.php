@@ -2,7 +2,7 @@
   'data' => []
 ])
 
-<ul class="gap-4 items-center text-sm lg:flex">
+<ul class="gap-4 items-center text-sm flex">
   @foreach ($data as $item)
   <x-admin.breadcrumbs-item :title="$item['title']" :href="$item['url']" :is-last="$loop->last"/>
 
