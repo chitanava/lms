@@ -9,6 +9,8 @@
 
 @section('content')
 <x-admin.page-header title="Pages">
-  <a href="#" class="btn btn-primary">New page</a>
+  <a href="{{ route('admin.pages.create') }}" class="btn btn-primary">New page</a>
 </x-admin.page-header>
+
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam, iste.</div>
 @endsection

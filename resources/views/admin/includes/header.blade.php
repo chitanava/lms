@@ -1,4 +1,4 @@
-<header class="h-[var(--header-height)] flex gap-8 items-center px-8 border-b border-b-slate-200 bg-white shadow-sm">
+<header class="h-[var(--header-height)] flex gap-8 items-center px-8 border-b border-b-slate-200 backdrop-blur-sm bg-white/80 shadow-sm sticky top-0">
   <button x-on:click="toggle()" class="w-10 h-10 rounded-full flex justify-center items-center hover:bg-slate-100">
     <svg x-show="open" x-cloak class="w-8 h-8 text-slate-900" xmlns="http://www.w3.org/2000/svg" fill="none"
       viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

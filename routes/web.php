@@ -25,4 +25,8 @@ Route::name('admin.')->prefix('admin')->group(function(){
     Route::get('/pages', function () {
         return view('admin.pages.index');
     })->name('pages');
+
+    Route::get('/pages/create', function () {
+        return view('admin.pages.create'); 
+    })->name('pages.create');
 });

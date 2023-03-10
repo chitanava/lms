@@ -30,12 +30,12 @@
 
   <main 
     :class="{ 'pl-[var(--nav-size)]':open }" 
-    class="transition-all flex flex-col gap-8"
+    class="transition-all flex flex-col gap-6"
     x-cloak>
     
     @include('admin.includes.header')
 
-    <div class="w-full max-w-7xl mx-auto px-8">
+    <div class="w-full max-w-7xl mx-auto px-8 gap-6 flex flex-col h-[900px]">
       @yield('content')
     </div>
   </main>
