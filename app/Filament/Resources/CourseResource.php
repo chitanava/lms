@@ -88,7 +88,37 @@ class CourseResource extends Resource
                     }),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        \Filament\Forms\Components\DatePicker::make('start_date'),
+                        \Filament\Forms\Components\DatePicker::make('end_date'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['start_date'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('start_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['end_date'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('end_date', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if ($data['start_date'] ?? null) {
+                            $indicators[] = \Filament\Tables\Filters\Indicator::make('Begin on ' . \Carbon\Carbon::parse($data['start_date'])->toFormattedDateString())
+                                ->removeField('start_date');
+                        }
+
+                        if ($data['end_date'] ?? null) {
+                            $indicators[] = \Filament\Tables\Filters\Indicator::make('End by ' . \Carbon\Carbon::parse($data['end_date'])->toFormattedDateString())
+                                ->removeField('end_date');
+                        }
+
+                        return $indicators;
+                    })
             ])
             ->actions([
                 \Filament\Tables\Actions\ActionGroup::make([
