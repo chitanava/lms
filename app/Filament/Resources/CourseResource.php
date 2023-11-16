@@ -74,17 +74,17 @@ class CourseResource extends Resource
                     ->badge()
                     ->getStateUsing(function (Course $record): string {
                         if ($record->end_date->isPast())
-                            return 'Ended';
+                            return __('status.ended');
 
                         if ($record->start_date->isFuture())
-                            return 'Not started';
+                            return __('status.not_started');
 
-                        return 'Active';
+                        return __('status.active');
                     })
                     ->color(fn (string $state): string => match ($state) {
-                        'Ended' => 'danger',
-                        'Not started' => 'gray',
-                        'Active' => 'success',
+                        __('status.ended') => 'danger',
+                        __('status.not_started') => 'gray',
+                        __('status.active') => 'success',
                     }),
             ])
             ->filters([
