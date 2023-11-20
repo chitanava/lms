@@ -2,16 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CourseResource\Pages;
-use App\Filament\Resources\CourseResource\RelationManagers;
-use App\Models\Course;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Course;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\CourseResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CourseResource\RelationManagers;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Group;
+use Filament\Infolists\Components\TextEntry;
 
 class CourseResource extends Resource
 {
@@ -63,24 +67,12 @@ class CourseResource extends Resource
                     ->sortable(),
 
                 \Filament\Tables\Columns\TextColumn::make('duration')
-                    ->getStateUsing(function (Course $record): string {
-                        $duration = $record->start_date->diff($record->end_date);
-
-                        return $duration->days . ' ' . ($duration->days === 1 ? 'day' : 'days');
-                    })
+                    ->getStateUsing(fn (Course $record): string => self::getDuration($record))
                     ->sortable(true, fn ($query, $direction) => $query->orderByRaw('end_date - start_date ' . $direction)),
 
                 \Filament\Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->getStateUsing(function (Course $record): string {
-                        if ($record->end_date->isPast())
-                            return __('status.ended');
-
-                        if ($record->start_date->isFuture())
-                            return __('status.not_started');
-
-                        return __('status.active');
-                    })
+                    ->getStateUsing(fn (Course $record): string => self::getStatus($record))
                     ->color(fn (string $state): string => match ($state) {
                         __('status.ended') => 'danger',
                         __('status.not_started') => 'gray',
@@ -134,6 +126,52 @@ class CourseResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                \Filament\Infolists\Components\Section::make()
+                    ->schema([
+                        \Filament\Infolists\Components\Split::make([
+                            \Filament\Infolists\Components\Grid::make(2)
+                                ->schema([
+                                    \Filament\Infolists\Components\Group::make([
+                                        \Filament\Infolists\Components\TextEntry::make('title'),
+                                        \Filament\Infolists\Components\TextEntry::make('slug'),
+                                        \Filament\Infolists\Components\TextEntry::make('status')
+                                            ->badge()
+                                            ->getStateUsing(fn (Course $record): string => self::getStatus($record))
+                                            ->color(fn (string $state): string => match ($state) {
+                                                __('status.ended') => 'danger',
+                                                __('status.not_started') => 'gray',
+                                                __('status.active') => 'success',
+                                            }),
+                                    ]),
+                                    \Filament\Infolists\Components\Group::make([
+                                        \Filament\Infolists\Components\TextEntry::make('start_date')
+                                            ->date(),
+                                        \Filament\Infolists\Components\TextEntry::make('end_date')
+                                            ->date(),
+                                        \Filament\Infolists\Components\TextEntry::make('duration')
+                                            ->getStateUsing(fn (Course $record) => self::getDuration($record)),
+                                    ]),
+                                ]),
+                            \Filament\Infolists\Components\ImageEntry::make('image')
+                                ->hiddenLabel()
+                                ->grow(false),
+                        ])->from('lg'),
+                    ]),
+                \Filament\Infolists\Components\Section::make('Description')
+                    ->schema([
+                        \Filament\Infolists\Components\TextEntry::make('description')
+                            ->prose()
+                            ->markdown()
+                            ->hiddenLabel(),
+                    ])
+                    ->collapsible(),
+            ]);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -149,5 +187,23 @@ class CourseResource extends Resource
             'view' => Pages\ViewCourse::route('/{record}'),
             'edit' => Pages\EditCourse::route('/{record}/edit'),
         ];
+    }
+
+    private static function getDuration(Course $record): string
+    {
+        $duration = $record->start_date->diff($record->end_date);
+
+        return $duration->days . ' ' . ($duration->days === 1 ? 'day' : 'days');
+    }
+
+    private static function getStatus(Course $record): string
+    {
+        if ($record->end_date->isPast())
+            return __('status.ended');
+
+        if ($record->start_date->isFuture())
+            return __('status.not_started');
+
+        return __('status.active');
     }
 }
