@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CourseResource\RelationManagers;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 
 class CourseResource extends Resource
@@ -25,6 +26,8 @@ class CourseResource extends Resource
 
     protected static ?int $navigationSort = 0;
 
+    protected static ?string $recordTitleAttribute = 'title';
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
@@ -34,8 +37,50 @@ class CourseResource extends Resource
     {
         return $form
             ->schema([
-                //
-            ]);
+                Group::make()
+                    ->schema([
+                        \Filament\Forms\Components\Section::make()
+                            ->schema([
+                                \Filament\Forms\Components\TextInput::make('title')
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (\Filament\Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+
+                                \Filament\Forms\Components\TextInput::make('slug')
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->required()
+                                    ->unique(ignoreRecord: true),
+
+                                \Filament\Forms\Components\MarkdownEditor::make('description')
+                                    ->required()
+                                    ->columnSpan('full'),
+                            ])
+                            ->columns(2),
+
+                        \Filament\Forms\Components\Section::make('Image')
+                            ->schema([
+                                Forms\Components\FileUpload::make('image')
+                                    ->image()
+                                    ->hiddenLabel()
+                            ])
+                            ->collapsible(),
+                    ])
+                    ->columnSpan(2),
+
+                \Filament\Forms\Components\Section::make('Period')
+                    ->schema([
+                        \Filament\Forms\Components\DatePicker::make('start_date')
+                            ->required(),
+
+                        \Filament\Forms\Components\DatePicker::make('end_date')
+                            ->required()
+                            ->after('start_date'),
+                    ])
+                    ->collapsible()
+                    ->columnSpan(1),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -66,7 +111,7 @@ class CourseResource extends Resource
                     ->date()
                     ->sortable(),
 
-                \Filament\Tables\Columns\TextColumn::make('duration')
+                \Filament\Tables\Columns\TextColumn::make('period')
                     ->getStateUsing(fn (Course $record): string => self::getDuration($record))
                     ->sortable(true, fn ($query, $direction) => $query->orderByRaw('end_date - start_date ' . $direction)),
 
@@ -113,11 +158,9 @@ class CourseResource extends Resource
                     })
             ])
             ->actions([
-                \Filament\Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -133,11 +176,24 @@ class CourseResource extends Resource
                 \Filament\Infolists\Components\Section::make()
                     ->schema([
                         \Filament\Infolists\Components\Split::make([
-                            \Filament\Infolists\Components\Grid::make(2)
+                            \Filament\Infolists\Components\Grid::make(3)
                                 ->schema([
                                     \Filament\Infolists\Components\Group::make([
                                         \Filament\Infolists\Components\TextEntry::make('title'),
-                                        \Filament\Infolists\Components\TextEntry::make('slug'),
+                                    ]),
+
+                                    \Filament\Infolists\Components\Group::make([
+                                        \Filament\Infolists\Components\TextEntry::make('start_date')
+                                            ->date(),
+
+                                        \Filament\Infolists\Components\TextEntry::make('end_date')
+                                            ->date(),
+                                    ]),
+
+                                    \Filament\Infolists\Components\Group::make([
+                                        \Filament\Infolists\Components\TextEntry::make('duration')
+                                            ->getStateUsing(fn (Course $record) => self::getDuration($record)),
+
                                         \Filament\Infolists\Components\TextEntry::make('status')
                                             ->badge()
                                             ->getStateUsing(fn (Course $record): string => self::getStatus($record))
@@ -146,21 +202,16 @@ class CourseResource extends Resource
                                                 __('status.not_started') => 'gray',
                                                 __('status.active') => 'success',
                                             }),
-                                    ]),
-                                    \Filament\Infolists\Components\Group::make([
-                                        \Filament\Infolists\Components\TextEntry::make('start_date')
-                                            ->date(),
-                                        \Filament\Infolists\Components\TextEntry::make('end_date')
-                                            ->date(),
-                                        \Filament\Infolists\Components\TextEntry::make('duration')
-                                            ->getStateUsing(fn (Course $record) => self::getDuration($record)),
-                                    ]),
+                                    ])
                                 ]),
+
                             \Filament\Infolists\Components\ImageEntry::make('image')
                                 ->hiddenLabel()
-                                ->grow(false),
+                                ->circular()
+                                ->grow(false)
                         ])->from('lg'),
                     ]),
+
                 \Filament\Infolists\Components\Section::make('Description')
                     ->schema([
                         \Filament\Infolists\Components\TextEntry::make('description')
