@@ -117,12 +117,8 @@ class CourseResource extends Resource
 
                 \Filament\Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->getStateUsing(fn (Course $record): string => self::getStatus($record))
-                    ->color(fn (string $state): string => match ($state) {
-                        __('status.ended') => 'danger',
-                        __('status.not_started') => 'gray',
-                        __('status.active') => 'success',
-                    }),
+                    ->getStateUsing(fn (Course $record): string => self::getStatus($record)->getLabel())
+                    ->color(fn (Course $record): string => self::getStatus($record)->getColor()),
             ])
             ->filters([
                 \Filament\Tables\Filters\Filter::make('created_at')
@@ -196,12 +192,8 @@ class CourseResource extends Resource
 
                                         \Filament\Infolists\Components\TextEntry::make('status')
                                             ->badge()
-                                            ->getStateUsing(fn (Course $record): string => self::getStatus($record))
-                                            ->color(fn (string $state): string => match ($state) {
-                                                __('status.ended') => 'danger',
-                                                __('status.not_started') => 'gray',
-                                                __('status.active') => 'success',
-                                            }),
+                                            ->getStateUsing(fn (Course $record): string => self::getStatus($record)->getLabel())
+                                            ->color(fn (Course $record): string => self::getStatus($record)->getColor()),
                                     ])
                                 ]),
 
@@ -247,14 +239,14 @@ class CourseResource extends Resource
         return $duration->days . ' ' . ($duration->days === 1 ? 'day' : 'days');
     }
 
-    private static function getStatus(Course $record): string
+    private static function getStatus(Course $record): \App\Enums\CourseStatus
     {
         if ($record->end_date->isPast())
-            return __('status.ended');
+            return \App\Enums\CourseStatus::Ended;
 
         if ($record->start_date->isFuture())
-            return __('status.not_started');
+            return \App\Enums\CourseStatus::NotStarted;
 
-        return __('status.active');
+        return \App\Enums\CourseStatus::Active;
     }
 }
