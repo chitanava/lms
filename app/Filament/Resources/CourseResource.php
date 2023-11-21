@@ -90,6 +90,7 @@ class CourseResource extends Resource
             ->defaultSort('sort', 'asc')
             ->columns([
                 \Filament\Tables\Columns\ImageColumn::make('image')
+                    ->circular()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 \Filament\Tables\Columns\TextColumn::make('title')
