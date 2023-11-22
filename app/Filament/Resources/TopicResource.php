@@ -119,7 +119,8 @@ class TopicResource extends NestedResource
                                 ])
                             ]),
                     ])
-                    ->collapsible(),
+                    ->collapsible()
+                    ->collapsed(),
             ]);
     }
 
