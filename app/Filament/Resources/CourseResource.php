@@ -18,9 +18,12 @@ use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Guava\Filament\NestedResources\Resources\NestedResource;
+use App\Traits\RelationManagerBreadcrumbs;
 
 class CourseResource extends NestedResource
 {
+    use RelationManagerBreadcrumbs;
+
     protected static ?string $model = Course::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';

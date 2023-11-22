@@ -7,6 +7,7 @@ use Filament\Resources\Pages\Page;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\CreateRecord;
 
 trait RelationManagerBreadcrumbs
 {
@@ -31,7 +32,7 @@ trait RelationManagerBreadcrumbs
       $relatedRecord = $record ? $ancestor->getRelatedModel($record) : $ancestor->getResource()::getModel()::firstWhere($recordRouteKeyName, $id);
     }
 
-    // Fix: Generate a link based on the type of the page. See line 43
+    // Fix: Generate a link based on the type of the page. See line 44 & 75
     if ($ancestor) {
       $index = $resource::hasPage('index')
         ? [
@@ -40,7 +41,7 @@ trait RelationManagerBreadcrumbs
           ]) => $resource::getBreadcrumb(),
         ]
         : [
-          $ancestor->getResource()::getUrl($page instanceof ViewRecord ? 'view' : 'edit', [
+          $ancestor->getResource()::getUrl($page instanceof ViewRecord || $page instanceof CreateRecord ? 'view' : 'edit', [
             ...$ancestor->getNormalizedRouteParameters($record ?? $relatedRecord),
           ]) . '#relation-manager' => $resource::getBreadcrumb(),
         ];
@@ -71,6 +72,7 @@ trait RelationManagerBreadcrumbs
 
       $pageTypes = match (true) {
         $page instanceof ViewRecord => ['view', 'edit'],
+        $page instanceof CreateRecord => ['view', 'edit'],
         default => ['edit', 'view'],
       };
 
