@@ -17,8 +17,9 @@ use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
+use Guava\Filament\NestedResources\Resources\NestedResource;
 
-class CourseResource extends Resource
+class CourseResource extends NestedResource
 {
     protected static ?string $model = Course::class;
 
@@ -188,7 +189,7 @@ class CourseResource extends Resource
                                     ]),
 
                                     \Filament\Infolists\Components\Group::make([
-                                        \Filament\Infolists\Components\TextEntry::make('duration')
+                                        \Filament\Infolists\Components\TextEntry::make('Period')
                                             ->getStateUsing(fn (Course $record) => self::getDuration($record)),
 
                                         \Filament\Infolists\Components\TextEntry::make('status')
@@ -219,7 +220,7 @@ class CourseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\TopicsRelationManager::class,
         ];
     }
 
@@ -233,14 +234,14 @@ class CourseResource extends Resource
         ];
     }
 
-    private static function getDuration(Course $record): string
+    public static function getDuration(Course $record): string
     {
         $duration = $record->start_date->diff($record->end_date);
 
         return $duration->days . ' ' . ($duration->days === 1 ? 'day' : 'days');
     }
 
-    private static function getStatus(Course $record): \App\Enums\CourseStatus
+    public static function getStatus(Course $record): \App\Enums\CourseStatus
     {
         if ($record->end_date->isPast())
             return \App\Enums\CourseStatus::Ended;
@@ -250,4 +251,5 @@ class CourseResource extends Resource
 
         return \App\Enums\CourseStatus::Active;
     }
+    
 }
