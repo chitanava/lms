@@ -174,7 +174,9 @@ class CourseResource extends NestedResource
     {
         return $infolist
             ->schema([
-                \Filament\Infolists\Components\Section::make()
+                \Filament\Infolists\Components\Section::make('Course')
+                    ->icon('heroicon-o-academic-cap')
+                    ->iconColor('primary')
                     ->schema([
                         \Filament\Infolists\Components\Split::make([
                             \Filament\Infolists\Components\Grid::make(3)
