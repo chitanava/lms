@@ -79,16 +79,21 @@ class TopicResource extends NestedResource
     {
         return $infolist
             ->schema([
-                \Filament\Infolists\Components\Section::make([
-                    \Filament\Infolists\Components\Group::make([
-                        \Filament\Infolists\Components\TextEntry::make('title'),
-                    ]),
+                \Filament\Infolists\Components\Section::make('Topic')
+                    ->icon('heroicon-o-hashtag')
+                    ->iconColor('primary')
+                    ->schema([
+                        \Filament\Infolists\Components\Group::make([
+                            \Filament\Infolists\Components\TextEntry::make('title'),
+                        ]),
 
-                    \Filament\Infolists\Components\IconEntry::make('is_visible')
-                        ->boolean(),
-                ])->columns(3),
+                        \Filament\Infolists\Components\IconEntry::make('is_visible')
+                            ->label('Visibility')
+                            ->boolean(),
+                    ])->columns(2),
 
                 \Filament\Infolists\Components\Section::make('Course')
+                    ->icon('heroicon-o-academic-cap')
                     ->schema([
                         \Filament\Infolists\Components\Grid::make(3)
                             ->schema([
@@ -127,7 +132,7 @@ class TopicResource extends NestedResource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\LessonsRelationManager::class,
         ];
     }
 
