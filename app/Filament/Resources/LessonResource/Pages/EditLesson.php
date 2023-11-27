@@ -17,4 +17,9 @@ class EditLesson extends NestedEditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    public function getRelationManagers(): array
+    {
+        return [];
+    }
 }
