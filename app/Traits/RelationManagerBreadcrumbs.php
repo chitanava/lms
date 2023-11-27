@@ -5,6 +5,7 @@ namespace App\Traits;
 use Illuminate\Support\Arr;
 use Filament\Resources\Pages\Page;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\CreateRecord;
@@ -41,7 +42,7 @@ trait RelationManagerBreadcrumbs
           ]) => $resource::getBreadcrumb(),
         ]
         : [
-          $ancestor->getResource()::getUrl($page instanceof ViewRecord || $page instanceof CreateRecord ? 'view' : 'edit', [
+          $ancestor->getResource()::getUrl($page instanceof ViewRecord || $page instanceof CreateRecord || $page instanceof EditRecord ? 'view' : 'edit', [
             ...$ancestor->getNormalizedRouteParameters($record ?? $relatedRecord),
           ]) . '#relation-manager' => $resource::getBreadcrumb(),
         ];
@@ -73,6 +74,7 @@ trait RelationManagerBreadcrumbs
       $pageTypes = match (true) {
         $page instanceof ViewRecord => ['view', 'edit'],
         $page instanceof CreateRecord => ['view', 'edit'],
+        $page instanceof EditRecord => ['view', 'edit'],
         default => ['edit', 'view'],
       };
 
