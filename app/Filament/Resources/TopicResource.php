@@ -56,25 +56,6 @@ class TopicResource extends NestedResource
             ]);
     }
 
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                //
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-
     public static function infolist(\Filament\Infolists\Infolist $infolist): \Filament\Infolists\Infolist
     {
         return $infolist
@@ -90,7 +71,8 @@ class TopicResource extends NestedResource
                         \Filament\Infolists\Components\IconEntry::make('is_visible')
                             ->label('Visibility')
                             ->boolean(),
-                    ])->columns(2),
+                    ])
+                    ->columns(2),
 
                 \Filament\Infolists\Components\Section::make('Course')
                     ->icon('heroicon-o-academic-cap')
@@ -138,17 +120,14 @@ class TopicResource extends NestedResource
 
     public static function getAncestor(): ?Ancestor
     {
-        // This is just a simple configuration with a few helper methods
         return Ancestor::make(
-            CourseResource::class, // Parent Resource Class
-            // Optionally you can pass a relationship name, if it's non-standard. The plugin will try to guess it otherwise
+            CourseResource::class,
         );
     }
 
     public static function getPages(): array
     {
         return [
-            // 'index' => Pages\ListTopics::route('/'),
             'create' => Pages\CreateTopic::route('/create'),
             'view' => Pages\ViewTopic::route('/{record}'),
             'edit' => Pages\EditTopic::route('/{record}/edit'),
