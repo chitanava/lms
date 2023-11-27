@@ -122,9 +122,10 @@ class LessonsRelationManager extends NestedRelationManager
                                 ]
                             ))
                     ])
-                    ->slideOver(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                    ->slideOver()
+                    ->iconButton(),
+                Tables\Actions\EditAction::make()->iconButton(),
+                Tables\Actions\DeleteAction::make()->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
