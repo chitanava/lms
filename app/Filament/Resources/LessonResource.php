@@ -16,11 +16,12 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LessonResource\RelationManagers;
 use Guava\Filament\NestedResources\Resources\NestedResource;
 use App\Traits\RelationManagerBreadcrumbs;
+use Illuminate\Support\Str;
 
 class LessonResource extends NestedResource
 {
     use RelationManagerBreadcrumbs;
-    
+
     protected static ?string $model = Lesson::class;
 
     protected static ?string $recordTitleAttribute = 'title';
@@ -31,31 +32,31 @@ class LessonResource extends NestedResource
     {
         return $form
             ->schema([
-                \Filament\Forms\Components\Group::make([
-                    \Filament\Forms\Components\Section::make([
-                        \Filament\Forms\Components\TextInput::make('title')
+                Forms\Components\Group::make([
+                    Forms\Components\Section::make([
+                        Forms\Components\TextInput::make('title')
                             ->required()
                             ->live(onBlur: true)
-                            ->afterStateUpdated(fn (\Filament\Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                            ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
-                        \Filament\Forms\Components\TextInput::make('slug')
+                        Forms\Components\TextInput::make('slug')
                             ->disabled()
                             ->dehydrated()
                             ->required()
                             ->unique(ignoreRecord: true),
                     ])
-                        ->columns(2),
+                        ->columns(),
 
-                    \Filament\Forms\Components\Section::make('Components')
+                    Forms\Components\Section::make('Components')
                 ])
                     ->columnSpan(2),
 
 
-                \Filament\Forms\Components\Section::make('Status')
+                Forms\Components\Section::make('Status')
                     ->schema([
-                        \Filament\Forms\Components\Toggle::make('is_visible')
+                        Forms\Components\Toggle::make('is_visible')
                             ->live()
-                            ->helperText(function (\Filament\Forms\Get $get) {
+                            ->helperText(function (Forms\Get $get) {
                                 if ($get('is_visible')) return 'This lesson will be visible.';
 
                                 return 'This lesson will be hidden.';

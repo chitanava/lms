@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\TopicResource\RelationManagers;
 
+use App\Models\Lesson;
+use Filament\Actions;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CourseResource;
+use Filament\Infolists;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 use Guava\Filament\NestedResources\RelationManagers\NestedRelationManager;
@@ -27,7 +30,7 @@ class LessonsRelationManager extends NestedRelationManager
         return $table
             ->recordTitleAttribute('title')
             ->reorderable('sort')
-            ->defaultSort('sort', 'asc')
+            ->defaultSort('sort')
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
@@ -37,7 +40,7 @@ class LessonsRelationManager extends NestedRelationManager
                     ->sortable(),
             ])
             ->filters([
-                \Filament\Tables\Filters\Filter::make('is_visible')
+                Tables\Filters\Filter::make('is_visible')
                     ->query(fn (Builder $query): Builder => $query->where('is_visible', true)),
             ])
             ->headerActions([
@@ -46,64 +49,64 @@ class LessonsRelationManager extends NestedRelationManager
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->infolist([
-                        \Filament\Infolists\Components\Section::make('Lesson')
+                        Infolists\Components\Section::make('Lesson')
                         ->icon('heroicon-o-book-open')
                         ->iconColor('primary')
                         ->schema([
-                            \Filament\Infolists\Components\Group::make([
-                                \Filament\Infolists\Components\TextEntry::make('title'),
+                            Infolists\Components\Group::make([
+                                Infolists\Components\TextEntry::make('title'),
                             ]),
-        
-                            \Filament\Infolists\Components\IconEntry::make('is_visible')
+
+                            Infolists\Components\IconEntry::make('is_visible')
                                 ->label('Visibility')
                                 ->boolean(),
                         ])
-                        ->columns(2),
-        
-                        \Filament\Infolists\Components\Section::make('Topic')
+                        ->columns(),
+
+                        Infolists\Components\Section::make('Topic')
                             ->icon('heroicon-o-hashtag')
                             ->schema([
-                                \Filament\Infolists\Components\Group::make([
-                                    \Filament\Infolists\Components\TextEntry::make('topic.title'),
+                                Infolists\Components\Group::make([
+                                    Infolists\Components\TextEntry::make('topic.title'),
                                 ]),
-        
-                                \Filament\Infolists\Components\IconEntry::make('topic.is_visible')
+
+                                Infolists\Components\IconEntry::make('topic.is_visible')
                                     ->label('Visibility')
                                     ->boolean(),
                             ])
-                            ->columns(2)
+                            ->columns()
                             ->collapsible()
                             ->collapsed(),
-        
-                        \Filament\Infolists\Components\Section::make('Course')
+
+                        Infolists\Components\Section::make('Course')
                             ->icon('heroicon-o-academic-cap')
                             ->schema([
-                                \Filament\Infolists\Components\Grid::make(3)
+                                Infolists\Components\Grid::make(3)
                                     ->schema([
-                                        \Filament\Infolists\Components\Group::make([
-                                            \Filament\Infolists\Components\TextEntry::make('topic.course.title')
+                                        Infolists\Components\Group::make([
+                                            Infolists\Components\TextEntry::make('topic.course.title')
                                                 ->label('Title'),
                                         ]),
-        
-                                        \Filament\Infolists\Components\Group::make([
-                                            \Filament\Infolists\Components\TextEntry::make('topic.course.start_date')
+
+                                        Infolists\Components\Group::make([
+                                            Infolists\Components\TextEntry::make('topic.course.start_date')
                                                 ->label('Start date')
                                                 ->date(),
-        
-                                            \Filament\Infolists\Components\TextEntry::make('topic.course.end_date')
+
+                                            Infolists\Components\TextEntry::make('topic.course.end_date')
                                                 ->label('End date')
                                                 ->date(),
                                         ]),
-        
-                                        \Filament\Infolists\Components\Group::make([
-                                            \Filament\Infolists\Components\TextEntry::make('Period')
-                                                ->getStateUsing(fn (\App\Models\Lesson $record) => CourseResource::class::getDuration($record->topic->course)),
-        
-                                            \Filament\Infolists\Components\TextEntry::make('status')
+
+                                        Infolists\Components\Group::make([
+                                            Infolists\Components\TextEntry::make('Period')
+                                                ->getStateUsing(fn (Lesson $record) => CourseResource::class::getDuration($record->topic->course)),
+
+                                            Infolists\Components\TextEntry::make('status')
                                                 ->label('Status')
                                                 ->badge()
-                                                ->getStateUsing(fn (\App\Models\Lesson $record): string => CourseResource::class::getStatus($record->topic->course)->getLabel())
-                                                ->color(fn (\App\Models\Lesson $record): string => CourseResource::class::getStatus($record->topic->course)->getColor()),
+                                                ->getStateUsing(fn (Lesson $record): string => CourseResource::class::getStatus($record->topic->course)->getLabel())
+                                                ->color(fn (Lesson $record): string => CourseResource::class::getStatus($record->topic->course)->getColor()),
                                         ])
                                     ]),
                             ])
@@ -111,16 +114,9 @@ class LessonsRelationManager extends NestedRelationManager
                             ->collapsed(),
                     ])
                     ->extraModalFooterActions([
-                        \Filament\Actions\Action::make('Edit lesson')
-                            ->url(fn (\App\Models\Lesson $record): string =>
-                            route(
-                                'filament.admin.resources.courses.topics.lessons.edit',
-                                [
-                                    'courseRecord' => $record->topic->course->id,
-                                    'topicRecord' => $record->topic->id,
-                                    'record' => $record->id
-                                ]
-                            ))
+                        Actions\Action::make('Edit lesson')
+                            ->url(fn (Lesson $record): string =>
+                            route('filament.admin.resources.courses.topics.lessons.edit', ['courseRecord' => $record->topic->course->id, 'topicRecord' => $record->topic->id, 'record' => $record->id]))
                     ])
                     ->slideOver()
                     ->iconButton(),

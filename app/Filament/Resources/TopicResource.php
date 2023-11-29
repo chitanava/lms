@@ -7,12 +7,7 @@ use App\Filament\Resources\TopicResource\RelationManagers;
 use App\Models\Topic;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists\Infolist;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists;
 use Guava\Filament\NestedResources\Resources\NestedResource;
 use Guava\Filament\NestedResources\Ancestor;
 use App\Traits\RelationManagerBreadcrumbs;
@@ -34,49 +29,49 @@ class TopicResource extends NestedResource
             ->schema(self::topicForm());
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Infolists\Infolist $infolist): Infolists\Infolist
     {
         return $infolist
             ->schema([
-                \Filament\Infolists\Components\Section::make('Topic')
+                Infolists\Components\Section::make('Topic')
                     ->icon('heroicon-o-hashtag')
                     ->iconColor('primary')
                     ->schema([
-                        \Filament\Infolists\Components\Group::make([
-                            \Filament\Infolists\Components\TextEntry::make('title'),
+                        Infolists\Components\Group::make([
+                            Infolists\Components\TextEntry::make('title'),
                         ]),
 
-                        \Filament\Infolists\Components\IconEntry::make('is_visible')
+                        Infolists\Components\IconEntry::make('is_visible')
                             ->label('Visibility')
                             ->boolean(),
                     ])
-                    ->columns(2),
+                    ->columns(),
 
-                \Filament\Infolists\Components\Section::make('Course')
+                Infolists\Components\Section::make('Course')
                     ->icon('heroicon-o-academic-cap')
                     ->schema([
-                        \Filament\Infolists\Components\Grid::make(3)
+                        Infolists\Components\Grid::make(3)
                             ->schema([
-                                \Filament\Infolists\Components\Group::make([
-                                    \Filament\Infolists\Components\TextEntry::make('course.title')
+                                Infolists\Components\Group::make([
+                                    Infolists\Components\TextEntry::make('course.title')
                                         ->label('Title'),
                                 ]),
 
-                                \Filament\Infolists\Components\Group::make([
-                                    \Filament\Infolists\Components\TextEntry::make('course.start_date')
+                                Infolists\Components\Group::make([
+                                    Infolists\Components\TextEntry::make('course.start_date')
                                         ->label('Start date')
                                         ->date(),
 
-                                    \Filament\Infolists\Components\TextEntry::make('course.end_date')
+                                    Infolists\Components\TextEntry::make('course.end_date')
                                         ->label('End date')
                                         ->date(),
                                 ]),
 
-                                \Filament\Infolists\Components\Group::make([
-                                    \Filament\Infolists\Components\TextEntry::make('Period')
+                                Infolists\Components\Group::make([
+                                    Infolists\Components\TextEntry::make('Period')
                                         ->getStateUsing(fn (Topic $record) => CourseResource::class::getDuration($record->course)),
 
-                                    \Filament\Infolists\Components\TextEntry::make('status')
+                                    Infolists\Components\TextEntry::make('status')
                                         ->label('Status')
                                         ->badge()
                                         ->getStateUsing(fn (Topic $record): string => CourseResource::class::getStatus($record->course)->getLabel())

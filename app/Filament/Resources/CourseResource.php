@@ -2,23 +2,21 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\CourseStatus;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Course;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Infolists\Infolist;
-use Filament\Resources\Resource;
+use Filament\Infolists;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CourseResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CourseResource\RelationManagers;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
 use Guava\Filament\NestedResources\Resources\NestedResource;
 use App\Traits\RelationManagerBreadcrumbs;
+use Illuminate\Support\Str;
 
 class CourseResource extends NestedResource
 {
@@ -43,26 +41,26 @@ class CourseResource extends NestedResource
             ->schema([
                 Group::make()
                     ->schema([
-                        \Filament\Forms\Components\Section::make()
+                        Forms\Components\Section::make()
                             ->schema([
-                                \Filament\Forms\Components\TextInput::make('title')
+                                Forms\Components\TextInput::make('title')
                                     ->required()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (\Filament\Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
-                                \Filament\Forms\Components\TextInput::make('slug')
+                                Forms\Components\TextInput::make('slug')
                                     ->disabled()
                                     ->dehydrated()
                                     ->required()
                                     ->unique(ignoreRecord: true),
 
-                                \Filament\Forms\Components\MarkdownEditor::make('description')
+                                Forms\Components\MarkdownEditor::make('description')
                                     ->required()
                                     ->columnSpan('full'),
                             ])
                             ->columns(2),
 
-                        \Filament\Forms\Components\Section::make('Image')
+                        Forms\Components\Section::make('Image')
                             ->schema([
                                 Forms\Components\FileUpload::make('image')
                                     ->image()
@@ -72,12 +70,12 @@ class CourseResource extends NestedResource
                     ])
                     ->columnSpan(2),
 
-                \Filament\Forms\Components\Section::make('Period')
+                Forms\Components\Section::make('Period')
                     ->schema([
-                        \Filament\Forms\Components\DatePicker::make('start_date')
+                        Forms\Components\DatePicker::make('start_date')
                             ->required(),
 
-                        \Filament\Forms\Components\DatePicker::make('end_date')
+                        Forms\Components\DatePicker::make('end_date')
                             ->required()
                             ->after('start_date'),
                     ])
@@ -91,45 +89,45 @@ class CourseResource extends NestedResource
     {
         return $table
             ->reorderable('sort')
-            ->defaultSort('sort', 'asc')
+            ->defaultSort('sort',)
             ->columns([
-                \Filament\Tables\Columns\ImageColumn::make('image')
+                Tables\Columns\ImageColumn::make('image')
                     ->circular()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                \Filament\Tables\Columns\TextColumn::make('title')
+                Tables\Columns\TextColumn::make('title')
                     ->searchable()
                     ->sortable(),
 
-                \Filament\Tables\Columns\TextColumn::make('slug')
+                Tables\Columns\TextColumn::make('slug')
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                \Filament\Tables\Columns\TextColumn::make('start_date')
+                Tables\Columns\TextColumn::make('start_date')
                     ->label('Start Date')
                     ->date()
                     ->sortable(),
 
-                \Filament\Tables\Columns\TextColumn::make('end_date')
+                Tables\Columns\TextColumn::make('end_date')
                     ->label('End Date')
                     ->date()
                     ->sortable(),
 
-                \Filament\Tables\Columns\TextColumn::make('period')
+                Tables\Columns\TextColumn::make('period')
                     ->getStateUsing(fn (Course $record): string => self::getDuration($record))
                     ->sortable(true, fn ($query, $direction) => $query->orderByRaw('end_date - start_date ' . $direction)),
 
-                \Filament\Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->getStateUsing(fn (Course $record): string => self::getStatus($record)->getLabel())
                     ->color(fn (Course $record): string => self::getStatus($record)->getColor()),
             ])
             ->filters([
-                \Filament\Tables\Filters\Filter::make('created_at')
+                Tables\Filters\Filter::make('created_at')
                     ->form([
-                        \Filament\Forms\Components\DatePicker::make('start_date'),
-                        \Filament\Forms\Components\DatePicker::make('end_date'),
+                        Forms\Components\DatePicker::make('start_date'),
+                        Forms\Components\DatePicker::make('end_date'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -146,12 +144,12 @@ class CourseResource extends NestedResource
                         $indicators = [];
 
                         if ($data['start_date'] ?? null) {
-                            $indicators[] = \Filament\Tables\Filters\Indicator::make('Begin on ' . \Carbon\Carbon::parse($data['start_date'])->toFormattedDateString())
+                            $indicators[] = Tables\Filters\Indicator::make('Begin on ' . Carbon::parse($data['start_date'])->toFormattedDateString())
                                 ->removeField('start_date');
                         }
 
                         if ($data['end_date'] ?? null) {
-                            $indicators[] = \Filament\Tables\Filters\Indicator::make('End by ' . \Carbon\Carbon::parse($data['end_date'])->toFormattedDateString())
+                            $indicators[] = Tables\Filters\Indicator::make('End by ' . Carbon::parse($data['end_date'])->toFormattedDateString())
                                 ->removeField('end_date');
                         }
 
@@ -170,50 +168,50 @@ class CourseResource extends NestedResource
             ]);
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Infolists\Infolist $infolist): Infolists\Infolist
     {
         return $infolist
             ->schema([
-                \Filament\Infolists\Components\Section::make('Course')
+                Infolists\Components\Section::make('Course')
                     ->icon('heroicon-o-academic-cap')
                     ->iconColor('primary')
                     ->schema([
-                        \Filament\Infolists\Components\Split::make([
-                            \Filament\Infolists\Components\Grid::make(3)
+                        Infolists\Components\Split::make([
+                            Infolists\Components\Grid::make(3)
                                 ->schema([
-                                    \Filament\Infolists\Components\Group::make([
-                                        \Filament\Infolists\Components\TextEntry::make('title'),
+                                    Infolists\Components\Group::make([
+                                        Infolists\Components\TextEntry::make('title'),
                                     ]),
 
-                                    \Filament\Infolists\Components\Group::make([
-                                        \Filament\Infolists\Components\TextEntry::make('start_date')
+                                    Infolists\Components\Group::make([
+                                        Infolists\Components\TextEntry::make('start_date')
                                             ->date(),
 
-                                        \Filament\Infolists\Components\TextEntry::make('end_date')
+                                        Infolists\Components\TextEntry::make('end_date')
                                             ->date(),
                                     ]),
 
-                                    \Filament\Infolists\Components\Group::make([
-                                        \Filament\Infolists\Components\TextEntry::make('Period')
+                                    Infolists\Components\Group::make([
+                                        Infolists\Components\TextEntry::make('Period')
                                             ->getStateUsing(fn (Course $record) => self::getDuration($record)),
 
-                                        \Filament\Infolists\Components\TextEntry::make('status')
+                                        Infolists\Components\TextEntry::make('status')
                                             ->badge()
                                             ->getStateUsing(fn (Course $record): string => self::getStatus($record)->getLabel())
                                             ->color(fn (Course $record): string => self::getStatus($record)->getColor()),
                                     ])
                                 ]),
 
-                            \Filament\Infolists\Components\ImageEntry::make('image')
+                            Infolists\Components\ImageEntry::make('image')
                                 ->hiddenLabel()
                                 ->circular()
                                 ->grow(false)
                         ])->from('lg'),
                     ]),
 
-                \Filament\Infolists\Components\Section::make('Description')
+                Infolists\Components\Section::make('Description')
                     ->schema([
-                        \Filament\Infolists\Components\TextEntry::make('description')
+                        Infolists\Components\TextEntry::make('description')
                             ->prose()
                             ->markdown()
                             ->hiddenLabel(),
@@ -246,15 +244,15 @@ class CourseResource extends NestedResource
         return $duration->days . ' ' . ($duration->days === 1 ? 'day' : 'days');
     }
 
-    public static function getStatus(Course $record): \App\Enums\CourseStatus
+    public static function getStatus(Course $record): CourseStatus
     {
         if ($record->end_date->isPast())
-            return \App\Enums\CourseStatus::Ended;
+            return CourseStatus::Ended;
 
         if ($record->start_date->isFuture())
-            return \App\Enums\CourseStatus::NotStarted;
+            return CourseStatus::NotStarted;
 
-        return \App\Enums\CourseStatus::Active;
+        return CourseStatus::Active;
     }
-    
+
 }

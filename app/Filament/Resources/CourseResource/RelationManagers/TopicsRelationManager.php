@@ -85,8 +85,6 @@ class TopicsRelationManager extends NestedRelationManager
             ]);
     }
 
-
-
     public function isReadOnly(): bool
     {
         return false;
