@@ -14,7 +14,22 @@ class ViewTopic extends NestedViewRecord
     protected function getActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            Actions\Action::make('Edit')
+                ->modalHeading(fn(): string => 'Edit '.$this->record->title)
+                ->fillForm(fn (): array => $this->record->toArray())
+                ->form(TopicResource::topicForm())
+                ->modalSubmitActionLabel('Save changes')
+                ->slideOver()
+                ->extraModalFooterActions(fn ($action): array => [
+                    Actions\DeleteAction::make()->successRedirectUrl(route('filament.admin.resources.courses.view', ['record' => $this->record->course->id]))->extraAttributes([
+                        'style' => 'order:999;',
+                        'class' => 'ml-auto'
+                    ]),
+                ])
+                ->action(function (array $data, $record, Actions\Action $action): void {
+                    $record->update($data);
+                    $action->successNotificationTitle('Saved')->sendSuccessNotification();
+                })
         ];
     }
 }

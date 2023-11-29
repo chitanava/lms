@@ -7,6 +7,7 @@ use App\Filament\Resources\TopicResource\RelationManagers;
 use App\Models\Topic;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Guava\Filament\NestedResources\Resources\NestedResource;
 use Guava\Filament\NestedResources\Ancestor;
 use App\Traits\RelationManagerBreadcrumbs;
+use Illuminate\Support\Str;
 
 class TopicResource extends NestedResource
 {
@@ -29,34 +31,10 @@ class TopicResource extends NestedResource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                \Filament\Forms\Components\Section::make([
-                    \Filament\Forms\Components\TextInput::make('title')
-                        ->required()
-                        ->live(onBlur: true)
-                        ->afterStateUpdated(fn (\Filament\Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
-
-                    \Filament\Forms\Components\TextInput::make('slug')
-                        ->disabled()
-                        ->dehydrated()
-                        ->required()
-                        ->unique(ignoreRecord: true),
-                ])->columns(2),
-
-                \Filament\Forms\Components\Section::make('Status')
-                    ->schema([
-                        \Filament\Forms\Components\Toggle::make('is_visible')
-                            ->live()
-                            ->helperText(function (\Filament\Forms\Get $get) {
-                                if ($get('is_visible')) return 'This topic will be visible.';
-
-                                return 'This topic will be hidden.';
-                            })
-                    ])
-            ]);
+            ->schema(self::topicForm());
     }
 
-    public static function infolist(\Filament\Infolists\Infolist $infolist): \Filament\Infolists\Infolist
+    public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
@@ -128,9 +106,38 @@ class TopicResource extends NestedResource
     public static function getPages(): array
     {
         return [
-            'create' => Pages\CreateTopic::route('/create'),
+//            'create' => Pages\CreateTopic::route('/create'),
             'view' => Pages\ViewTopic::route('/{record}'),
             'edit' => Pages\EditTopic::route('/{record}/edit'),
+        ];
+    }
+
+    public static function topicForm(): array
+    {
+        return [
+            Forms\Components\Section::make([
+                Forms\Components\TextInput::make('title')
+                    ->required()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
+
+                Forms\Components\TextInput::make('slug')
+                    ->disabled()
+                    ->dehydrated()
+                    ->required()
+                    ->unique(ignoreRecord: true),
+            ])->columns(),
+
+            Forms\Components\Section::make('Status')
+                ->schema([
+                    Forms\Components\Toggle::make('is_visible')
+                        ->live()
+                        ->helperText(function (Forms\Get $get) {
+                            if ($get('is_visible')) return 'This topic will be visible.';
+
+                            return 'This topic will be hidden.';
+                        })
+                ])
         ];
     }
 }
