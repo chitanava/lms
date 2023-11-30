@@ -48,6 +48,39 @@ class LessonResource extends NestedResource
                         ->columns(),
 
                     Forms\Components\Section::make('Components')
+                        ->schema([
+                            Forms\Components\Builder::make('components')
+                                ->hiddenLabel()
+                                ->blocks([
+                                    Forms\Components\Builder\Block::make('paragraph')
+                                        ->schema([
+                                            Forms\Components\TextInput::make('title')
+                                                ->required(),
+                                            Forms\Components\RichEditor::make('content')
+                                                ->required(),
+                                        ])
+                                        ->icon('heroicon-m-bars-3-bottom-left'),
+
+                                    Forms\Components\Builder\Block::make('accordion')
+                                        ->schema([
+                                            Forms\Components\TextInput::make('title')
+                                                ->required(),
+                                            Forms\Components\Repeater::make('items')
+                                                ->schema([
+                                                    Forms\Components\TextInput::make('heading')
+                                                        ->required(),
+                                                    Forms\Components\RichEditor::make('description')
+                                                        ->required()
+                                                ])
+                                                ->collapsible()
+                                                ->cloneable()
+                                                ->itemLabel(fn (array $state): ?string => $state['heading'] ?? null)
+                                        ])
+                                        ->icon('heroicon-m-queue-list'),
+                                ])
+                                ->collapsible()
+                                ->collapsed()
+                        ])
                 ])
                     ->columnSpan(2),
 

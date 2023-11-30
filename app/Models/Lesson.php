@@ -10,6 +10,10 @@ class Lesson extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+      'components' => 'array',
+    ];
+
     public function topic(): BelongsTo
     {
         return $this->belongsTo(Topic::class);
