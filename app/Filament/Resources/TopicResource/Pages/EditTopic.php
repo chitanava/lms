@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\CourseResource\Pages;
+namespace App\Filament\Resources\TopicResource\Pages;
 
-use App\Filament\Resources\CourseResource;
+use App\Filament\Resources\TopicResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Guava\Filament\NestedResources\Pages\NestedEditRecord;
 
-class EditCourse extends EditRecord
+class EditTopic extends NestedEditRecord
 {
-    protected static string $resource = CourseResource::class;
+    protected static string $resource = TopicResource::class;
 
     protected function getHeaderActions(): array
     {
