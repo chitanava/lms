@@ -21,6 +21,38 @@ class LessonFactory extends Factory
             'title' => $title = $this->faker->unique()->sentence(),
             'slug' => Str::slug($title),
             'is_visible' => $this->faker->boolean(),
+            'components' => $this->generateComponents(),
         ];
+    }
+
+    protected function generateComponents(): array
+    {
+        return
+            [
+                [
+                    'data' => [
+                        'title' => $this->faker->unique()->sentence(),
+                        'content' => $this->faker->realText()
+                    ],
+                    'type' => 'paragraph'
+                ],
+                [
+                    'data' => [
+                        'title' => $this->faker->unique()->sentence(),
+                        'items' =>
+                            [
+                                [
+                                    'heading' => $this->faker->unique()->sentence(),
+                                    'description' => $this->faker->realText()
+                                ],
+                                [
+                                    'heading' => $this->faker->unique()->sentence(),
+                                    'description' => $this->faker->realText()
+                                ]
+                            ]
+                    ],
+                    'type' => 'accordion'
+                ]
+            ];
     }
 }
