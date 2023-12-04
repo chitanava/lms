@@ -124,7 +124,7 @@ class CourseResource extends NestedResource
                     ->color(fn (Course $record): string => self::getStatus($record)->getColor()),
             ])
             ->filters([
-                Tables\Filters\Filter::make('created_at')
+                Tables\Filters\Filter::make('period')
                     ->form([
                         Forms\Components\DatePicker::make('start_date'),
                         Forms\Components\DatePicker::make('end_date'),
