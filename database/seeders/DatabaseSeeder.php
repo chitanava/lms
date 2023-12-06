@@ -3,6 +3,10 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Course;
+use App\Models\Lesson;
+use App\Models\Topic;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,28 +19,38 @@ class DatabaseSeeder extends Seeder
     {
         Storage::deleteDirectory('public');
 
-        // \App\Models\User::factory(10)->create();
-
-        \App\Models\User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => 'root'
+        $this->call([
+            ShieldSeeder::class,
         ]);
 
-        \App\Models\Course::factory()
+        User::factory(4)->create();
+
+        User::factory()->create([
+            'first_name' => 'Nika',
+            'last_name' =>'Chitanava',
+            'email' => 'chitanava@gmail.com',
+            'password' => 'root',
+            'filament_user' => 1,
+        ])
+            ->roles()
+            ->attach(1);
+
+        Course::factory()
             ->count(mt_rand(1, 4))
             ->create()
             ->each(function ($course) {
-                \App\Models\Topic::factory()
+                Topic::factory()
                     ->count(mt_rand(5, 10))
                     ->for($course)
                     ->create()
                     ->each(function ($topic) {
-                        \App\Models\Lesson::factory()
+                        Lesson::factory()
                             ->count(mt_rand(5, 10))
                             ->for($topic)
                             ->create();
                     });
             });
+
+        $this->command->info('Database Seeding Completed.');
     }
 }
