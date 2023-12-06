@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Forms;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Pages\Page;
+use Filament\Resources\Concerns\HasTabs;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -28,11 +29,14 @@ class UserResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'full_name';
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['first_name', 'last_name'];
+    }
+
     public static function getNavigationGroup(): ?string
     {
-        return Utils::isResourceNavigationGroupEnabled()
-            ? __('filament-shield::filament-shield.nav.group')
-            : '';
+        return 'User Management';
     }
 
     public static function getNavigationSort(): ?int
@@ -44,19 +48,19 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Status')
-                    ->schema([
-                        Forms\Components\Toggle::make('filament_user')
-                            ->live(),
-
-                        Forms\Components\Select::make('roles')
-                            ->relationship('roles', 'name')
-                            ->multiple()
-                            ->preload()
-                            ->searchable()
-                            ->visible(fn(Forms\Get $get) => $get('filament_user'))
-                            ->getOptionLabelFromRecordUsing(fn (Model $record) => Str::headline($record->name)),
-                    ]),
+//                Forms\Components\Section::make('Status')
+//                    ->schema([
+//                        Forms\Components\Toggle::make('filament_user')
+//                            ->live(),
+//
+//                        Forms\Components\Select::make('roles')
+//                            ->relationship('roles', 'name')
+//                            ->multiple()
+//                            ->preload()
+//                            ->searchable()
+//                            ->visible(fn(Forms\Get $get) => $get('filament_user'))
+//                            ->getOptionLabelFromRecordUsing(fn (Model $record) => Str::headline($record->name)),
+//                    ]),
             ]);
     }
 
@@ -64,25 +68,28 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('full_name')
+                Tables\Columns\TextColumn::make('first_name')
+                    ->label('Name')
                     ->sortable()
-                    ->searchable(),
+                    ->formatStateUsing(fn(Model $record) => "{$record->first_name} {$record->last_name}")
+                    ->searchable(query: fn(Builder $query, string $search): Builder => $query
+                        ->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")),
+
                 Tables\Columns\TextColumn::make('email')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\IconColumn::make('filament_user')
-                    ->boolean()
-                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()
                     ->date(),
+
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
-                    ->formatStateUsing(fn ($state): string => Str::headline($state)),
+                    ->formatStateUsing(fn ($state): string => Str::headline($state))
+                    ->hidden(fn($livewire) => $livewire->activeTab === 'participants'),
             ])
             ->filters([
-                Tables\Filters\Filter::make('filament_user')
-                    ->query(fn (Builder $query): Builder => $query->where('filament_user', true)),
 
                 Tables\Filters\SelectFilter::make('roles')
                     ->multiple()
@@ -91,6 +98,9 @@ class UserResource extends Resource
                     ->searchable()
                     ->preload()
                     ->placeholder('Select an option')
+                    ->hidden(function(Pages\ListUsers $livewire){
+                        return $livewire->activeTab === 'participants';
+                    })
                     ->query(fn (Builder $query, array $data): Builder => $query
                         ->when(
                             $data['values'],
@@ -138,22 +148,22 @@ class UserResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make()
-                    ->schema([
-                        Infolists\Components\Group::make([
-                            Infolists\Components\TextEntry::make('first_name'),
-                            Infolists\Components\TextEntry::make('last_name'),
-                        ]),
-
-                        Infolists\Components\Group::make([
-                            Infolists\Components\IconEntry::make('filament_user')
-                                ->boolean(),
-                            Infolists\Components\TextEntry::make('roles.name')
-                                ->badge()
-                                ->formatStateUsing(fn ($state): string => Str::headline($state)),
-                        ]),
-                    ])
-                    ->columns(2),
+//                Infolists\Components\Section::make()
+//                    ->schema([
+//                        Infolists\Components\Group::make([
+//                            Infolists\Components\TextEntry::make('first_name'),
+//                            Infolists\Components\TextEntry::make('last_name'),
+//                        ]),
+//
+//                        Infolists\Components\Group::make([
+//                            Infolists\Components\IconEntry::make('filament_user')
+//                                ->boolean(),
+//                            Infolists\Components\TextEntry::make('roles.name')
+//                                ->badge()
+//                                ->formatStateUsing(fn ($state): string => Str::headline($state)),
+//                        ]),
+//                    ])
+//                    ->columns(2),
             ]);
     }
 
