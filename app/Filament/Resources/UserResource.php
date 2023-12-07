@@ -48,19 +48,27 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-//                Forms\Components\Section::make('Status')
-//                    ->schema([
-//                        Forms\Components\Toggle::make('filament_user')
-//                            ->live(),
-//
-//                        Forms\Components\Select::make('roles')
-//                            ->relationship('roles', 'name')
-//                            ->multiple()
-//                            ->preload()
-//                            ->searchable()
-//                            ->visible(fn(Forms\Get $get) => $get('filament_user'))
-//                            ->getOptionLabelFromRecordUsing(fn (Model $record) => Str::headline($record->name)),
-//                    ]),
+                Forms\Components\Tabs::make('Tabs')
+                    ->tabs([
+                        Forms\Components\Tabs\Tab::make('Status')
+                            ->schema([
+                                Forms\Components\Toggle::make('filament_user')
+                                    ->live(),
+
+                                Forms\Components\Select::make('roles')
+                                    ->relationship('roles', 'name')
+                                    ->multiple()
+                                    ->preload()
+                                    ->searchable()
+                                    ->visible(fn(Forms\Get $get) => $get('filament_user'))
+                                    ->getOptionLabelFromRecordUsing(fn (Model $record) => Str::headline($record->name)),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('Password')
+                            ->schema([
+                                // ...
+                            ]),
+                    ])
+                ->columnSpanFull()
             ]);
     }
 
@@ -153,22 +161,30 @@ class UserResource extends Resource
     {
         return $infolist
             ->schema([
-//                Infolists\Components\Section::make()
-//                    ->schema([
-//                        Infolists\Components\Group::make([
-//                            Infolists\Components\TextEntry::make('first_name'),
-//                            Infolists\Components\TextEntry::make('last_name'),
-//                        ]),
-//
-//                        Infolists\Components\Group::make([
-//                            Infolists\Components\IconEntry::make('filament_user')
-//                                ->boolean(),
-//                            Infolists\Components\TextEntry::make('roles.name')
-//                                ->badge()
-//                                ->formatStateUsing(fn ($state): string => Str::headline($state)),
-//                        ]),
-//                    ])
-//                    ->columns(2),
+                Infolists\Components\Section::make()
+                    ->schema([
+                        Infolists\Components\Group::make([
+                            Infolists\Components\TextEntry::make('first_name'),
+
+                            Infolists\Components\TextEntry::make('last_name'),
+
+                            Infolists\Components\TextEntry::make('email'),
+                        ]),
+
+                        Infolists\Components\Group::make([
+                            Infolists\Components\IconEntry::make('verified')
+                                ->boolean(),
+
+                            Infolists\Components\IconEntry::make('filament_user')
+                                ->boolean(),
+
+                            Infolists\Components\TextEntry::make('roles.name')
+                                ->badge()
+                                ->formatStateUsing(fn ($state): string => Str::headline($state))
+                                ->visible(fn($record) => $record->filament_user),
+                        ]),
+                    ])
+                    ->columns(2),
             ]);
     }
 
