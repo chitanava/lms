@@ -84,12 +84,17 @@ class UserResource extends Resource
                     ->sortable()
                     ->date(),
 
+                Tables\Columns\IconColumn::make('verified')
+                    ->boolean(),
+
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
                     ->formatStateUsing(fn ($state): string => Str::headline($state))
                     ->hidden(fn($livewire) => $livewire->activeTab === 'participants'),
             ])
             ->filters([
+                Tables\Filters\Filter::make('verified')
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('email_verified_at')),
 
                 Tables\Filters\SelectFilter::make('roles')
                     ->multiple()
@@ -103,7 +108,7 @@ class UserResource extends Resource
                     })
                     ->query(fn (Builder $query, array $data): Builder => $query
                         ->when(
-                            $data['values'],
+                            $data['values'] ?? null,
                             fn (Builder $query, $roleIds): Builder => $query->whereHas(
                                 'roles',
                                 fn ($query) => $query->whereIn('id', $roleIds)

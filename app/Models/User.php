@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,6 +54,13 @@ class User extends Authenticatable implements FilamentUser, HasName
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $attributes['first_name'] .' '. $attributes['last_name'],
+        );
+    }
+
+    protected function verified(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->hasVerifiedEmail()
         );
     }
 
