@@ -145,9 +145,9 @@ class EditProfile extends Page implements HasForms
 
     protected function getPasswordFormComponent(): Component
     {
-        return TextInput::make('password')
+        return \Rawilk\FilamentPasswordInput\Password::make('password')
             ->label(__('filament-panels::pages/auth/edit-profile.form.password.label'))
-            ->password()
+            ->regeneratePassword()
             ->rule(Password::default())
             ->autocomplete('new-password')
             ->dehydrated(fn ($state): bool => filled($state))
@@ -158,10 +158,8 @@ class EditProfile extends Page implements HasForms
 
     protected function getPasswordConfirmationFormComponent(): Component
     {
-        return TextInput::make('passwordConfirmation')
+        return \Rawilk\FilamentPasswordInput\Password::make('passwordConfirmation')
             ->label(__('filament-panels::pages/auth/edit-profile.form.password_confirmation.label'))
-            ->password()
-            ->required()
             ->visible(fn (Get $get): bool => filled($get('password')))
             ->dehydrated(false);
     }
