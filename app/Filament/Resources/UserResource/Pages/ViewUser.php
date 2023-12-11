@@ -16,10 +16,10 @@ class ViewUser extends ViewRecord
     {
         return [
             Actions\EditAction::make()
-                ->label('Settings')
+                ->label(__('Settings'))
                 ->icon('heroicon-o-cog-6-tooth')
                 ->slideOver()
-                ->modalHeading(fn():string => $this->record->fullname.'\'s'.' '.'Profile settings'),
+                ->modalHeading(fn():string => $this->record->fullname.'\'s'.' '.__('Profile settings')),
         ];
     }
 }

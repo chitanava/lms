@@ -51,11 +51,11 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Status')
+                Forms\Components\Section::make(__('Status'))
                     ->schema([
                         Forms\Components\Toggle::make('filament_user')
                             ->live()
-                            ->helperText(fn($record):string|Htmlable => 'By enabling this option, the user will gain access to the filament admin panel.'),
+                            ->helperText(fn($record):string|Htmlable => __('Enabling this option allows the user to access Filament admin panel.')),
 
                         Forms\Components\Select::make('roles')
                             ->relationship('roles', 'name')
@@ -65,7 +65,7 @@ class UserResource extends Resource
                             ->visible(fn(Forms\Get $get) => $get('filament_user'))
                             ->getOptionLabelFromRecordUsing(fn (Model $record) => Str::headline($record->name)),
                     ])
-                    ->description('You have the option to choose whether the individual is a filament user or not, and you can assign roles accordingly.'),
+                    ->description(__('To empower the user, provide them with access to the panel.')),
             ]);
     }
 
@@ -74,7 +74,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')
-                    ->label('Name')
+                    ->label(__('Name'))
                     ->sortable()
                     ->formatStateUsing(fn(Model $record) => "{$record->first_name} {$record->last_name}")
                     ->searchable(query: fn(Builder $query, string $search): Builder => $query
@@ -92,7 +92,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('verified')
                     ->label(false)
                     ->badge()
-                    ->formatStateUsing(fn(bool $state):string => $state ? 'Verified' : '')
+                    ->formatStateUsing(fn(bool $state):string => $state ? __('Verified') : '')
                     ->color('success'),
 
                 Tables\Columns\TextColumn::make('roles.name')
@@ -110,7 +110,7 @@ class UserResource extends Resource
                     ->getOptionLabelFromRecordUsing(fn (Model $record) => Str::headline($record->name))
                     ->searchable()
                     ->preload()
-                    ->placeholder('Select an option')
+                    ->placeholder(__('Select an option'))
                     ->hidden(function(Pages\ListUsers $livewire){
                         return $livewire->activeTab === 'participants';
                     })
@@ -148,10 +148,10 @@ class UserResource extends Resource
 
                 Tables\Actions\EditAction::make()
                     ->iconButton()
-                    ->label('Settings')
+                    ->label(__('Settings'))
                     ->icon('heroicon-o-cog-6-tooth')
                     ->slideOver()
-                    ->modalHeading(fn($record):string => $record->fullname.'\'s'.' '.'Profile settings'),
+                    ->modalHeading(fn($record):string => $record->fullname.'\'s'.' '.__('Profile settings')),
 
                 Tables\Actions\DeleteAction::make()
                     ->iconButton(),

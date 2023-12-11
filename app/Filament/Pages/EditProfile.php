@@ -18,6 +18,7 @@ use Filament\Support\Exceptions\Halt;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class EditProfile extends Page implements HasForms
@@ -148,6 +149,8 @@ class EditProfile extends Page implements HasForms
         return \Rawilk\FilamentPasswordInput\Password::make('password')
             ->label(__('filament-panels::pages/auth/edit-profile.form.password.label'))
             ->regeneratePassword()
+            ->generatePasswordUsing(fn () => Str::password(12))
+            ->notifyOnPasswordRegenerate(false)
             ->rule(Password::default())
             ->autocomplete('new-password')
             ->dehydrated(fn ($state): bool => filled($state))
@@ -175,13 +178,13 @@ class EditProfile extends Page implements HasForms
             'profileForm' => $this->form(
                 $this->makeForm()
                     ->schema([
-                        Section::make('Profile information')
+                        Section::make(__('Profile Information'))
                             ->schema([
                                 $this->getFirstNameFormComponent(),
                                 $this->getLastNameFormComponent(),
                                 $this->getEmailFormComponent(),
                             ])
-                            ->description('Update your account\'s profile information and email address.')
+                            ->description(__('Update your account\'s profile information and email address.'))
                             ->columns(2)
                             ->aside(),
                     ])
@@ -193,12 +196,12 @@ class EditProfile extends Page implements HasForms
             'passwordForm' => $this->form(
                 $this->makeForm()
                     ->schema([
-                        Section::make('Update Password')
+                        Section::make(__('Update Password'))
                             ->schema([
                                 $this->getPasswordFormComponent(),
                                 $this->getPasswordConfirmationFormComponent(),
                             ])
-                            ->description('Confirm that your account utilizes a lengthy, unpredictable password to enhance security.')
+                            ->description(__('To maintain the security of your account, it is recommended to use a long and random password.'))
                             ->columns(2)
                             ->aside(),
                     ])
@@ -233,7 +236,7 @@ class EditProfile extends Page implements HasForms
     protected function getSavePasswordFormAction(): Action
     {
         return Action::make('save')
-            ->label('Update password')
+            ->label(__('Update password'))
             ->submit('savePassword')
             ->disabled(fn() => !filled($this->passwordData['password'] ?? null));
     }

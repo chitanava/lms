@@ -23,19 +23,17 @@ class ListUsers extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-//            Actions\CreateAction::make(),
-        ];
+        return [];
     }
 
     public function getTabs(): array
     {
         return [
-            'filament_users' => Tab::make('Filament users')
+            'filament_users' => Tab::make(__('Filament users'))
                 ->badge(User::query()->where('filament_user', '=', 1)->count())
                 ->modifyQueryUsing(fn (Builder $query) => $query
                     ->where('filament_user', '=', 1)),
-            'participants' => Tab::make('Participants')
+            'participants' => Tab::make(__('Participants'))
                 ->badge(User::query()->where('filament_user', '!=', 1)->count())
                 ->modifyQueryUsing(fn (Builder $query) => $query
                     ->where('filament_user', '!=', 1)),
