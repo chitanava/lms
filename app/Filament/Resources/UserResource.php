@@ -12,12 +12,15 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Pages\Page;
 use Filament\Resources\Concerns\HasTabs;
 use Filament\Resources\Resource;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Filament\Infolists;
 
@@ -48,27 +51,21 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Tabs::make('Tabs')
-                    ->tabs([
-                        Forms\Components\Tabs\Tab::make('Status')
-                            ->schema([
-                                Forms\Components\Toggle::make('filament_user')
-                                    ->live(),
+                Forms\Components\Section::make('Status')
+                    ->schema([
+                        Forms\Components\Toggle::make('filament_user')
+                            ->live()
+                            ->helperText(fn($record):string|Htmlable => 'By enabling this option, the user will gain access to the filament admin panel.'),
 
-                                Forms\Components\Select::make('roles')
-                                    ->relationship('roles', 'name')
-                                    ->multiple()
-                                    ->preload()
-                                    ->searchable()
-                                    ->visible(fn(Forms\Get $get) => $get('filament_user'))
-                                    ->getOptionLabelFromRecordUsing(fn (Model $record) => Str::headline($record->name)),
-                            ]),
-                        Forms\Components\Tabs\Tab::make('Password')
-                            ->schema([
-                                // ...
-                            ]),
+                        Forms\Components\Select::make('roles')
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->visible(fn(Forms\Get $get) => $get('filament_user'))
+                            ->getOptionLabelFromRecordUsing(fn (Model $record) => Str::headline($record->name)),
                     ])
-                ->columnSpanFull()
+                    ->description('You have the option to choose whether the individual is a filament user or not, and you can assign roles accordingly.'),
             ]);
     }
 
@@ -92,8 +89,11 @@ class UserResource extends Resource
                     ->sortable()
                     ->date(),
 
-                Tables\Columns\IconColumn::make('verified')
-                    ->boolean(),
+                Tables\Columns\TextColumn::make('verified')
+                    ->label(false)
+                    ->badge()
+                    ->formatStateUsing(fn(bool $state):string => $state ? 'Verified' : '')
+                    ->color('success'),
 
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
@@ -145,8 +145,14 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->iconButton(),
+
                 Tables\Actions\EditAction::make()
-                    ->iconButton(),
+                    ->iconButton()
+                    ->label('Settings')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->slideOver()
+                    ->modalHeading(fn($record):string => $record->fullname.'\'s'.' '.'Profile settings'),
+
                 Tables\Actions\DeleteAction::make()
                     ->iconButton(),
             ])
@@ -183,8 +189,13 @@ class UserResource extends Resource
                                 ->formatStateUsing(fn ($state): string => Str::headline($state))
                                 ->visible(fn($record) => $record->filament_user),
                         ]),
+
+                        Infolists\Components\Group::make([
+                            Infolists\Components\TextEntry::make('created_at')
+                                ->date(),
+                        ]),
                     ])
-                    ->columns(2),
+                    ->columns(3),
             ]);
     }
 
@@ -195,21 +206,13 @@ class UserResource extends Resource
         ];
     }
 
-    public static function getRecordSubNavigation(Page $page): array
-    {
-        return $page->generateNavigationItems([
-            Pages\ViewUser::class,
-            Pages\EditUser::class,
-        ]);
-    }
-
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListUsers::route('/'),
 //            'create' => Pages\CreateUser::route('/create'),
             'view' => Pages\ViewUser::route('/{record}'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+//            'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 }
