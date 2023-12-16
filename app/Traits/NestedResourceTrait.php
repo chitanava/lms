@@ -10,7 +10,7 @@ use Filament\Resources\Pages\ViewRecord;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\CreateRecord;
 
-trait RelationManagerBreadcrumbs
+trait NestedResourceTrait
 {
 
   public static function getBreadcrumbs(Page $page, Model $record = null): array
@@ -42,7 +42,7 @@ trait RelationManagerBreadcrumbs
           ]) => $resource::getBreadcrumb(),
         ]
         : [
-          $ancestor->getResource()::getUrl($page instanceof ViewRecord || $page instanceof CreateRecord || $page instanceof EditRecord ? 'view' : 'edit', [
+          $ancestor->getResource()::getUrl('view', [
             ...$ancestor->getNormalizedRouteParameters($record ?? $relatedRecord),
           ]) . '#relation-manager' => $resource::getBreadcrumb(),
         ];
@@ -71,12 +71,7 @@ trait RelationManagerBreadcrumbs
       ];
     } else {
 
-      $pageTypes = match (true) {
-        $page instanceof ViewRecord => ['view', 'edit'],
-        $page instanceof CreateRecord => ['view', 'edit'],
-        $page instanceof EditRecord => ['view', 'edit'],
-        default => ['edit', 'view'],
-      };
+      $pageTypes = ['view', 'edit'];
 
       foreach ($pageTypes as $pageType) {
         if ($resource::hasPage($pageType) && $resource::can($pageType, $record)) {

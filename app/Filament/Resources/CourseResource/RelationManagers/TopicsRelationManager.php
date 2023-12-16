@@ -40,41 +40,16 @@ class TopicsRelationManager extends NestedRelationManager
                     ->query(fn (Builder $query): Builder => $query->where('is_visible', true)),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->slideOver(),
-
-//                Tables\Actions\Action::make('New topic')
-//                    ->modalHeading('Create topic')
-//                    ->form(TopicResource::topicForm())
-//                    ->modalSubmitActionLabel('Create')
-//                    ->extraModalFooterActions(fn (Tables\Actions\Action $action): array => [
-//                        $action->makeModalSubmitAction('createAnother', arguments: ['another' => true])->label('Create & create another')
-//                    ])
-//                    ->slideOver()
-//                    ->action(function (array $data, array $arguments, Tables\Actions\Action $action, Form $form): void {
-//                        $this->getOwnerRecord()->topics()->create($data);
-//                        $action->successNotificationTitle('Created')->sendSuccessNotification();
-//
-//                        if ($arguments['another'] ?? false) {
-//                            $form->fill();
-//                            $action->halt();
-//                        }
-//                    }),
+                Tables\Actions\CreateAction::make()
+                    ->slideOver(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()->iconButton(),
+                Tables\Actions\ViewAction::make()
+                    ->iconButton(),
 
-                Tables\Actions\Action::make('Edit')
-                    ->icon('heroicon-s-pencil-square')
+                Tables\Actions\EditAction::make()
                     ->iconButton()
-                    ->modalHeading(fn(Topic $record): string => 'Edit '.$record->title)
-                    ->fillForm(fn (Topic $record): array => $record->toArray())
-                    ->form(TopicResource::topicForm())
-                    ->modalSubmitActionLabel('Save changes')
-                    ->slideOver()
-                    ->action(function (array $data, Topic $record, Tables\Actions\Action $action): void {
-                        $record->update($data);
-                        $action->successNotificationTitle('Saved')->sendSuccessNotification();
-                    }),
+                    ->slideOver(),
 
                 Tables\Actions\DeleteAction::make()->iconButton(),
             ])

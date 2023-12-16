@@ -10,12 +10,12 @@ use Filament\Forms\Form;
 use Filament\Infolists;
 use Guava\Filament\NestedResources\Resources\NestedResource;
 use Guava\Filament\NestedResources\Ancestor;
-use App\Traits\RelationManagerBreadcrumbs;
+use App\Traits\NestedResourceTrait;
 use Illuminate\Support\Str;
 
 class TopicResource extends NestedResource
 {
-    use RelationManagerBreadcrumbs;
+    use NestedResourceTrait;
 
     protected static ?string $model = Topic::class;
 
@@ -26,7 +26,31 @@ class TopicResource extends NestedResource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema(self::topicForm());
+            ->schema([
+                Forms\Components\Section::make([
+                    Forms\Components\TextInput::make('title')
+                        ->required()
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
+
+                    Forms\Components\TextInput::make('slug')
+                        ->disabled()
+                        ->dehydrated()
+                        ->required()
+                        ->unique(ignoreRecord: true),
+                ])->columns(),
+
+                Forms\Components\Section::make('Status')
+                    ->schema([
+                        Forms\Components\Toggle::make('is_visible')
+                            ->live()
+                            ->helperText(function (Forms\Get $get) {
+                                if ($get('is_visible')) return 'This topic will be visible.';
+
+                                return 'This topic will be hidden.';
+                            })
+                    ])
+            ]);
     }
 
     public static function infolist(Infolists\Infolist $infolist): Infolists\Infolist
@@ -103,36 +127,7 @@ class TopicResource extends NestedResource
         return [
 //            'create' => Pages\CreateTopic::route('/create'),
             'view' => Pages\ViewTopic::route('/{record}'),
-            'edit' => Pages\EditTopic::route('/{record}/edit'),
-        ];
-    }
-
-    public static function topicForm(): array
-    {
-        return [
-            Forms\Components\Section::make([
-                Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
-
-                Forms\Components\TextInput::make('slug')
-                    ->disabled()
-                    ->dehydrated()
-                    ->required()
-                    ->unique(ignoreRecord: true),
-            ])->columns(),
-
-            Forms\Components\Section::make('Status')
-                ->schema([
-                    Forms\Components\Toggle::make('is_visible')
-                        ->live()
-                        ->helperText(function (Forms\Get $get) {
-                            if ($get('is_visible')) return 'This topic will be visible.';
-
-                            return 'This topic will be hidden.';
-                        })
-                ])
+//            'edit' => Pages\EditTopic::route('/{record}/edit'),
         ];
     }
 }

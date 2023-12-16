@@ -15,12 +15,12 @@ use App\Filament\Resources\LessonResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LessonResource\RelationManagers;
 use Guava\Filament\NestedResources\Resources\NestedResource;
-use App\Traits\RelationManagerBreadcrumbs;
+use App\Traits\NestedResourceTrait;
 use Illuminate\Support\Str;
 
 class LessonResource extends NestedResource
 {
-    use RelationManagerBreadcrumbs;
+    use NestedResourceTrait;
 
     protected static ?string $model = Lesson::class;
 

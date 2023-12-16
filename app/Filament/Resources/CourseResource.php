@@ -15,12 +15,12 @@ use App\Filament\Resources\CourseResource\Pages;
 use App\Filament\Resources\CourseResource\RelationManagers;
 use Filament\Forms\Components\Group;
 use Guava\Filament\NestedResources\Resources\NestedResource;
-use App\Traits\RelationManagerBreadcrumbs;
+use App\Traits\NestedResourceTrait;
 use Illuminate\Support\Str;
 
 class CourseResource extends NestedResource
 {
-    use RelationManagerBreadcrumbs;
+    use NestedResourceTrait;
 
     protected static ?string $model = Course::class;
 
