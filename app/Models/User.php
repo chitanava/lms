@@ -48,6 +48,7 @@ class User extends Authenticatable implements FilamentUser, HasName
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'filament_user' => 'bool',
     ];
 
     protected function fullName(): Attribute
