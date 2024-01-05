@@ -1,0 +1,77 @@
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar JSON @scalar(class: "MLL\\GraphQLScalars\\JSON")
+
+#type Query {
+#    user(
+#      id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+#      email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
+#    ): User @find
+#
+#    users(
+#      name: String @where(operator: "like")
+#    ): [User!]! @paginate(defaultCount: 10)
+#}
+
+type Mutation {
+    login(email: String!, password: String!): User!
+    logout: User @guard
+}
+
+type Query {
+    me: User @auth
+
+    course(id: ID! @eq): Course @find
+    courses: [Course!]! @all @guard
+
+    topic(id: ID! @eq): Topic @find
+    topics: [Topic!]! @all(scopes: ["visible"])
+
+    lesson(id: ID! @eq): Lesson @find
+    lessons: [Lesson!]! @all(scopes: ["visible"])
+}
+
+type User {
+    id: ID!
+    first_name: String!
+    last_name: String!
+    email: String!
+    email_verified_at: DateTime
+    filament_user: Boolean
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Course {
+    id: ID!
+    title: String!
+    slug: String!
+    description: String
+    image: String
+    start_date: DateTime
+    end_date: DateTime
+    created_at: DateTime
+    updated_at: DateTime
+    topics: [Topic]
+}
+
+type Topic {
+    id: ID!
+    title: String!
+    slug: String!
+    is_visible: Boolean!
+    created_at: DateTime
+    updated_at: DateTime
+    lessons: [Lesson]
+    course: Course!
+}
+
+type Lesson {
+    id: ID!
+    title: String!
+    slug: String!
+    components: JSON
+    is_visible: Boolean!
+    created_at: DateTime
+    updated_at: DateTime
+    topic: Topic!
+}

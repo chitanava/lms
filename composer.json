@@ -16,6 +16,8 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "mll-lab/graphql-php-scalars": "^6.2",
+        "nuwave/lighthouse": "^6.29",
         "rawilk/filament-password-input": "^1.1"
     },
     "require-dev": {
