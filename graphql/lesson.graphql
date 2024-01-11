@@ -1,0 +1,15 @@
+type Lesson {
+    id: ID!
+    title: String!
+    slug: String!
+    components: JSON
+    is_visible: Boolean!
+    created_at: DateTime
+    updated_at: DateTime
+    topic: Topic!
+}
+
+extend type Query {
+    lesson(id: ID! @eq): Lesson @find
+    lessons: [Lesson!]! @all(scopes: ["visible"])
+}

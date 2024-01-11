@@ -1,0 +1,17 @@
+type Course {
+    id: ID!
+    title: String!
+    slug: String!
+    description: String
+    image: String
+    start_date: DateTime
+    end_date: DateTime
+    created_at: DateTime
+    updated_at: DateTime
+    topics: [Topic]
+}
+
+extend type Query {
+    course(id: ID! @eq): Course @find
+    courses: [Course!]! @all @guard
+}
