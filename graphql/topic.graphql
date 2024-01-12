@@ -1,0 +1,14 @@
+type Topic {
+    id: ID!
+    title: String!
+    slug: String!
+    is_visible: Boolean!
+    created_at: DateTime
+    updated_at: DateTime
+    lessons: [Lesson]
+    course: Course!
+}
+extend type Query {
+    topic(id: ID! @eq): Topic @find
+    topics: [Topic!]! @all(scopes: ["visible"])
+}

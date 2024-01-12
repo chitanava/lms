@@ -9,7 +9,7 @@ class UserObserver
 {
     public function updated(User $user): void
     {
-        if(!$user->filament_user)
+        if($user->isDirty('filament_user') && $user->getOriginal('filament_user'))
         {
             $user->roles()->detach();
 

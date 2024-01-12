@@ -1,0 +1,10 @@
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar JSON @scalar(class: "MLL\\GraphQLScalars\\JSON")
+
+type Query
+type Mutation
+
+#import sanctum.graphql
+#import course.graphql
+#import topic.graphql
+#import lesson.graphql

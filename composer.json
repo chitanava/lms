@@ -10,12 +10,15 @@
     "require": {
         "php": "^8.1",
         "bezhansalleh/filament-shield": "^3.1",
+        "daniel-de-wit/lighthouse-sanctum": "^3.0",
         "filament/filament": "^3.0-stable",
         "guava/filament-nested-resources": "^1.0@alpha",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "mll-lab/graphql-php-scalars": "^6.2",
+        "nuwave/lighthouse": "^6.29",
         "rawilk/filament-password-input": "^1.1"
     },
     "require-dev": {
