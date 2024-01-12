@@ -17,4 +17,11 @@ class CreateCourse extends CreateRecord
         if ($maxSort = $record->max('sort'))
             $record->update(['sort' => $maxSort + 1]);
     }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['author_id'] = auth()->id();
+
+        return $data;
+    }
 }

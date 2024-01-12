@@ -86,6 +86,9 @@ class LessonsRelationManager extends NestedRelationManager
                                         Infolists\Components\Group::make([
                                             Infolists\Components\TextEntry::make('topic.course.title')
                                                 ->label('Title'),
+
+                                            Infolists\Components\TextEntry::make('topic.course.author.fullName')
+                                                ->label('Author'),
                                         ]),
 
                                         Infolists\Components\Group::make([

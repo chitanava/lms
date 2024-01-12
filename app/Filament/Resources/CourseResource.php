@@ -99,6 +99,11 @@ class CourseResource extends NestedResource
                     ->searchable()
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('author.fullName')
+                    ->label('Author')
+                    ->sortable()
+                    ->searchable(['first_name', 'last_name']),
+
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
                     ->sortable()
@@ -181,6 +186,8 @@ class CourseResource extends NestedResource
                                 ->schema([
                                     Infolists\Components\Group::make([
                                         Infolists\Components\TextEntry::make('title'),
+
+                                        Infolists\Components\TextEntry::make('author.fullName'),
                                     ]),
 
                                     Infolists\Components\Group::make([

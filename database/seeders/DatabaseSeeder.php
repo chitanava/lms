@@ -37,6 +37,9 @@ class DatabaseSeeder extends Seeder
 
         Course::factory()
             ->count(mt_rand(1, 4))
+            ->state(fn(array $attributes) => [
+                'author_id' => User::all()->random()->id
+            ])
             ->create()
             ->each(function ($course) {
                 Topic::factory()

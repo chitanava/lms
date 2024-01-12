@@ -79,6 +79,9 @@ class TopicResource extends NestedResource
                                 Infolists\Components\Group::make([
                                     Infolists\Components\TextEntry::make('course.title')
                                         ->label('Title'),
+
+                                    Infolists\Components\TextEntry::make('course.author.fullName')
+                                        ->label('Author'),
                                 ]),
 
                                 Infolists\Components\Group::make([
