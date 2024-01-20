@@ -1,9 +1,15 @@
 <script setup>
 import { usePasswordInputVisibily } from "@/use/usePasswordInputVisibily.js";
-import { vNoAnimation } from "@/directives/noAnimation.js";
-import AuthFormHeader from "@/components/auth-form/AuthFormHeader.vue";
+import AuthFormHeader from "@/components/auth/misc/AuthFormHeader.vue";
+import RegisterLink from "@/components/auth/links/RegisterLink.vue";
+import ForgotPasswordLink from "@/components/auth/links/ForgotPasswordLink.vue";
+import SubmitButton from "@/components/auth/form/SubmitButton.vue";
 
 const {showPassword, passwordInputType, togglePasswordVisibility} = usePasswordInputVisibily()
+
+const handleSubmit = () => {
+    console.log('Form submitted successfully.')
+}
 
 </script>
 
@@ -40,17 +46,11 @@ const {showPassword, passwordInputType, togglePasswordVisibility} = usePasswordI
                 </div>
             </label>
 
-            <div class="text-right">
-                <router-link :to="{name: 'forgot-password'}">
-                    <span class="hover:underline hover:underline-offset-4 text-xs">Forgot password?</span>
-                </router-link>
-            </div>
-            <button class="btn btn-active btn-primary w-full no-animation" v-no-animation>Login</button>
-            <div class="text-right">
-                <router-link :to="{name: 'register'}">
-                    <span class="text-xs hover:underline hover:underline-offset-4">Create new account</span>
-                </router-link>
-            </div>
+            <ForgotPasswordLink/>
+
+            <SubmitButton label="Login" @submit="handleSubmit"/>
+
+            <RegisterLink/>
         </div>
     </div>
 

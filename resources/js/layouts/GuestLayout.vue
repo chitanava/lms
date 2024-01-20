@@ -1,5 +1,5 @@
 <script setup>
-import AuthFormImage from "@/components/auth-form/AuthFormImage.vue";
+import AuthFormImage from "@/components/auth/misc/AuthFormImage.vue";
 </script>
 
 <template>

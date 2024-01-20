@@ -1,6 +1,6 @@
 <script setup>
 import { usePasswordInputVisibily } from "@/use/usePasswordInputVisibily.js";
-import AuthFormHeader from "@/components/auth-form/AuthFormHeader.vue";
+import AuthFormHeader from "@/components/auth/misc/AuthFormHeader.vue";
 import { vNoAnimation } from "@/directives/noAnimation.js";
 import PasswordMeter from 'vue-simple-password-meter';
 import {ref} from "vue";

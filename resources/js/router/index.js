@@ -8,7 +8,6 @@ import LoginView from '@/views/auth/LoginView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
 import ForgotPasswordView from '@/views/auth/ForgotPasswordView.vue'
 import ResetPasswordView from '@/views/auth/ResetPasswordView.vue'
-import VerifyEmailView from '@/views/auth/VerifyEmailView.vue'
 
 import HomeView from '@/views/HomeView.vue'
 
@@ -38,12 +37,6 @@ const routes = [
         name: 'reset-password',
         meta: { layout: GuestLayout },
         component: ResetPasswordView
-    },
-    {
-        path: '/verify-email',
-        name: 'verify-email',
-        meta: { layout: GuestLayout },
-        component: VerifyEmailView
     },
 
     {

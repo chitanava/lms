@@ -1,6 +1,11 @@
 <script setup>
-import { vNoAnimation } from "@/directives/noAnimation.js";
-import AuthFormHeader from "@/components/auth-form/AuthFormHeader.vue";
+import AuthFormHeader from "@/components/auth/misc/AuthFormHeader.vue";
+import LoginLink from "@/components/auth/links/LoginLink.vue";
+import SubmitButton from "@/components/auth/form/SubmitButton.vue";
+
+const handleSubmit = () => {
+    console.log('Form submitted successfully.')
+}
 </script>
 
 <template>
@@ -14,17 +19,10 @@ import AuthFormHeader from "@/components/auth-form/AuthFormHeader.vue";
                 <input type="text" class="input input-bordered w-full" />
             </label>
 
-            <button class="btn btn-active btn-primary w-full no-animation" v-no-animation>Reset password</button>
+            <SubmitButton label="Reset password" @submit="handleSubmit"/>
 
-            <div class="text-right">
-                <router-link :to="{name: 'login'}">
-                    <span class="text-xs hover:underline hover:underline-offset-4">Login to your account</span>
-                </router-link>
-            </div>
+            <LoginLink/>
+
         </div>
     </div>
 </template>
-
-<style scoped>
-
-</style>
