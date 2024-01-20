@@ -17,38 +17,45 @@ import NotFoundView from '@/views/NotFoundView.vue'
 const routes = [
     {
         path: '/login',
+        name: 'login',
         meta: { layout: GuestLayout },
         component: LoginView
     },
     {
         path: '/register',
+        name: 'register',
         meta: { layout: GuestLayout },
         component: RegisterView
     },
     {
         path: '/forgot-password',
+        name: 'forgot-password',
         meta: { layout: GuestLayout },
         component: ForgotPasswordView
     },
     {
         path: '/reset-password',
+        name: 'reset-password',
         meta: { layout: GuestLayout },
         component: ResetPasswordView
     },
     {
         path: '/verify-email',
+        name: 'verify-email',
         meta: { layout: GuestLayout },
         component: VerifyEmailView
     },
 
     {
         path: '/',
+        name: 'home',
         meta: { layout: AuthLayout },
         component: HomeView
     },
 
     {
         path: '/:notFound',
+        name: 'not-found',
         meta: { layout: NotFoundLayout },
         component: NotFoundView
     }
