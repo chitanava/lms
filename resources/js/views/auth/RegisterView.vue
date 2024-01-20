@@ -3,7 +3,12 @@ import { usePasswordInputVisibily } from "@/use/usePasswordInputVisibily.js";
 import { vNoAnimation } from "@/directives/noAnimation.js";
 import AuthFormHeader from "@/components/auth-form/AuthFormHeader.vue";
 
+import PasswordMeter from 'vue-simple-password-meter';
+import {ref} from "vue";
+
 const {showPassword, passwordInputType, togglePasswordVisibility} = usePasswordInputVisibily()
+
+const password = ref('');
 </script>
 
 <template>
@@ -37,8 +42,8 @@ const {showPassword, passwordInputType, togglePasswordVisibility} = usePasswordI
                 <div class="label">
                     <span class="label-text">Password</span>
                 </div>
-                <div class="relative">
-                    <input :type="passwordInputType" class="input input-bordered w-full" />
+                <div class="relative mb-1">
+                    <input v-model="password" :type="passwordInputType" class="input input-bordered w-full" />
                     <div @click="togglePasswordVisibility" class="absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer">
                         <span v-if="!showPassword">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-base-content/50">
@@ -53,6 +58,7 @@ const {showPassword, passwordInputType, togglePasswordVisibility} = usePasswordI
                         </span>
                     </div>
                 </div>
+                <div class="mx-4"><password-meter :password="password" /></div>
             </label>
 
             <button class="btn btn-active btn-primary w-full no-animation" v-no-animation>Register</button>
