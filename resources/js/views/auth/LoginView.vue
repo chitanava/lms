@@ -41,7 +41,9 @@ const {showPassword, passwordInputType, togglePasswordVisibility} = usePasswordI
             </label>
 
             <div class="text-right">
-                <a href="" class="hover:underline hover:underline-offset-4"><span class="text-xs">Forgot password?</span></a>
+                <router-link :to="{name: 'forgot-password'}">
+                    <span class="hover:underline hover:underline-offset-4 text-xs">Forgot password?</span>
+                </router-link>
             </div>
             <button class="btn btn-active btn-primary w-full no-animation" v-no-animation>Login</button>
             <div class="text-right">
