@@ -1,7 +1,15 @@
 <script setup>
+import { reactive } from "vue";
+import AuthFormLayout from "@/components/auth/misc/AuthFormLayout.vue";
+import AuthFormContent from "@/components/auth/misc/AuthFormContent.vue";
 import AuthFormHeader from "@/components/auth/misc/AuthFormHeader.vue";
-import LoginLink from "@/components/auth/links/LoginLink.vue";
+import TextInput from "@/components/auth/form/TextInput.vue";
 import SubmitButton from "@/components/auth/form/SubmitButton.vue";
+import LoginLink from "@/components/auth/links/LoginLink.vue";
+
+const state = reactive({
+    email: '',
+})
 
 const handleSubmit = () => {
     console.log('Form submitted successfully.')
@@ -9,20 +17,12 @@ const handleSubmit = () => {
 </script>
 
 <template>
-    <div class="space-y-8">
+    <AuthFormLayout>
         <AuthFormHeader>Forgot password</AuthFormHeader>
-        <div class="space-y-6">
-            <label class="form-control w-full">
-                <div class="label">
-                    <span class="label-text">Email</span>
-                </div>
-                <input type="text" class="input input-bordered w-full" />
-            </label>
-
+        <AuthFormContent>
+            <TextInput v-model="state.email" label="Email"/>
             <SubmitButton label="Reset password" @submit="handleSubmit"/>
-
             <LoginLink/>
-
-        </div>
-    </div>
+        </AuthFormContent>
+    </AuthFormLayout>
 </template>
