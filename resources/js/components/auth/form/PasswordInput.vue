@@ -1,6 +1,7 @@
 <script setup>
 import { usePasswordInputVisibily } from "@/use/usePasswordInputVisibily.js";
 import PasswordMeter from 'vue-simple-password-meter';
+import AuthFormError from "@/components/auth/misc/AuthFormError.vue";
 
 const model = defineModel()
 
@@ -12,6 +13,14 @@ const props = defineProps({
     passwordMeter: {
         type: Boolean,
         default: false
+    },
+    required: {
+        type: Boolean,
+        default: false
+    },
+    lighthouseValidationError: {
+        type: String,
+        default: null
     }
 })
 
@@ -24,7 +33,7 @@ const {showPassword, passwordInputType, togglePasswordVisibility} = usePasswordI
             <span class="label-text">{{ props.label }}</span>
         </div>
         <div class="relative">
-            <input v-model="model" :type="passwordInputType" class="input input-bordered w-full" />
+            <input v-model="model" :type="passwordInputType" class="input input-bordered w-full" :required="props.required"/>
             <div @click="togglePasswordVisibility" class="absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer">
                 <span v-if="!showPassword">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-base-content/50">
@@ -42,5 +51,6 @@ const {showPassword, passwordInputType, togglePasswordVisibility} = usePasswordI
         <div v-if="passwordMeter" class="mx-4">
             <password-meter :password="model" />
         </div>
+        <AuthFormError v-if="props.lighthouseValidationError">{{ props.lighthouseValidationError }}</AuthFormError>
     </label>
 </template>

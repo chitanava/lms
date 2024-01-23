@@ -180,6 +180,9 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'input.email' => 'email',
+        'input.password' => 'password'
+    ],
 
 ];
