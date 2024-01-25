@@ -18,7 +18,7 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    lighthouseValidationError: {
+    apiValidationError: {
         type: String,
         default: null
     }
@@ -51,6 +51,6 @@ const {showPassword, passwordInputType, togglePasswordVisibility} = usePasswordI
         <div v-if="passwordMeter" class="mx-4">
             <password-meter :password="model" />
         </div>
-        <AuthFormError v-if="props.lighthouseValidationError">{{ props.lighthouseValidationError }}</AuthFormError>
+        <AuthFormError v-if="props.apiValidationError">{{ props.apiValidationError }}</AuthFormError>
     </label>
 </template>

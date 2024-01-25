@@ -16,7 +16,7 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    lighthouseValidationError: {
+    apiValidationError: {
         type: String,
         default: null
     }
@@ -29,6 +29,6 @@ const props = defineProps({
             <span class="label-text">{{ props.label }}</span>
         </div>
         <input v-model="model" :type="props.type" class="input input-bordered w-full" :required="props.required"/>
-        <AuthFormError v-if="props.lighthouseValidationError">{{ props.lighthouseValidationError }}</AuthFormError>
+        <AuthFormError v-if="props.apiValidationError">{{ props.apiValidationError }}</AuthFormError>
     </label>
 </template>

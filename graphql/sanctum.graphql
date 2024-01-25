@@ -71,10 +71,10 @@ input ResendEmailVerificationInput {
 }
 
 input RegisterInput {
-    first_name: String!
-    last_name: String!
-    email: String! @rules(apply: ["bail", "email", "unique:users,email"])
-    password: String! @rules(apply: ["min:6", "confirmed"])
+    first_name: String! @rules(apply: ["required"])
+    last_name: String! @rules(apply: ["required"])
+    email: String! @rules(apply: ["bail", "required", "email", "unique:users,email"])
+    password: String! @rules(apply: ["required", "min:6", "confirmed"])
     password_confirmation: String!
     verification_url: VerificationUrlInput
 }
