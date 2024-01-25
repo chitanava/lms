@@ -6,6 +6,7 @@ import NotFoundLayout from '@/layouts/NotFoundLayout.vue'
 
 import LoginView from '@/views/auth/LoginView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
+import VerifyEmailView from "@/views/auth/VerifyEmailView.vue"
 import ForgotPasswordView from '@/views/auth/ForgotPasswordView.vue'
 import ResetPasswordView from '@/views/auth/ResetPasswordView.vue'
 
@@ -25,6 +26,12 @@ const routes = [
         name: 'register',
         meta: { layout: GuestLayout },
         component: RegisterView
+    },
+    {
+        path: '/verify-email',
+        name: 'verify-email',
+        meta: { layout: GuestLayout },
+        component: VerifyEmailView
     },
     {
         path: '/forgot-password',

@@ -7,8 +7,10 @@ import TextInput from "@/components/auth/form/TextInput.vue";
 import PasswordInput from "@/components/auth/form/PasswordInput.vue";
 import SubmitButton from "@/components/auth/form/SubmitButton.vue";
 import LoginLink from "@/components/auth/links/LoginLink.vue";
-import AccountCreatedMessage from "@/components/auth/misc/AccountCreatedMessage.vue";
 import { useAPI } from "@/use/useAPI.js";
+import { useRouter } from "vue-router";
+
+const router = useRouter()
 
 const state = reactive({
     firstName: '',
@@ -39,7 +41,11 @@ const handleSubmit = async () => {
             }
             `
 
-    load(query)
+    await load(query)
+
+    if (success.value && success.value.data.register.status === 'MUST_VERIFY_EMAIL'){
+        router.push({ name: 'verify-email' })
+    }
 }
 </script>
 
@@ -75,7 +81,5 @@ const handleSubmit = async () => {
             <SubmitButton label="Register" :pending="pending"/>
             <LoginLink/>
         </AuthFormContent>
-
-        <AccountCreatedMessage v-else :email="state.email"/>
     </AuthFormLayout>
 </template>
