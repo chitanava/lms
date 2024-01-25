@@ -52,12 +52,12 @@ const handleSubmit = async () => {
                     v-model="state.firstName"
                     label="First name"
                     required
-                    :apiValidationError="apiErrors.validation?.first_name"/>
+                    :apiValidationError="apiErrors.validation?.firstName"/>
                 <TextInput
                     v-model="state.lastName"
                     label="Last name"
                     required
-                    :apiValidationError="apiErrors.validation?.last_name"/>
+                    :apiValidationError="apiErrors.validation?.lastName"/>
             </div>
             <TextInput
                 v-model="state.email"

@@ -1,5 +1,6 @@
 import {ref} from "vue";
 import axios from "axios";
+import _camelCase from "lodash/camelCase"
 
 export const useAPI = () => {
     const apiErrors = ref({})
@@ -10,7 +11,7 @@ export const useAPI = () => {
         try {
             pending.value = true
 
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // await new Promise(resolve => setTimeout(resolve, 2000));
 
             const response = await axios({
                 url: 'http://lms.test/graphql',
@@ -50,7 +51,7 @@ export const useAPI = () => {
                 for (const [key, [value]] of Object.entries(validationError)) {
                     apiErrors.value.validation = {
                         ...apiErrors.value?.validation,
-                        [key.split('.').pop()]: value,
+                        [_camelCase(key.split('.').pop())]: value,
                     }
                 }
             }
