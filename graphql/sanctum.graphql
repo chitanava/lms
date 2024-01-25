@@ -27,6 +27,19 @@ enum LogoutStatus {
     TOKEN_REVOKED
 }
 
+type LoginResponse {
+    token: String
+    status: LoginStatus!
+}
+
+enum LoginStatus {
+    """MUST_VERIFY_EMAIL"""
+    MUST_VERIFY_EMAIL
+
+    """SUCCESS"""
+    SUCCESS
+}
+
 type RegisterResponse {
     token: String
     status: RegisterStatus!
@@ -156,8 +169,9 @@ extend type Query {
 }
 
 extend type Mutation {
-    login(input: LoginInput @spread): AccessToken!
-        @field(resolver: "DanielDeWit\\LighthouseSanctum\\GraphQL\\Mutations\\Login")
+    login(input: LoginInput @spread): LoginResponse!
+        @field(resolver: "App\\Services\\LighthouseSanctum\\Login")
+#        @field(resolver: "DanielDeWit\\LighthouseSanctum\\GraphQL\\Mutations\\Login")
     logout: LogoutResponse! @guard
         @field(resolver: "DanielDeWit\\LighthouseSanctum\\GraphQL\\Mutations\\Logout")
     register(input: RegisterInput @spread): RegisterResponse!
