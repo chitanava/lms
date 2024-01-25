@@ -18,7 +18,7 @@ const state = reactive({
     passwordConfirmation: ''
 })
 
-const { apiErrors, success, load } = useAPI()
+const { apiErrors, success, pending, load } = useAPI()
 
 const handleSubmit = async () => {
     const query = `
@@ -72,7 +72,7 @@ const handleSubmit = async () => {
                 required
                 :apiValidationError="apiErrors.validation?.password"/>
             <PasswordInput v-model="state.passwordConfirmation" label="Password confirmation" required />
-            <SubmitButton label="Register"/>
+            <SubmitButton label="Register" :pending="pending"/>
             <LoginLink/>
         </AuthFormContent>
 

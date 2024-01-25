@@ -4,9 +4,14 @@ import axios from "axios";
 export const useAPI = () => {
     const apiErrors = ref({})
     const success = ref(false)
+    const pending = ref(false)
 
     const load = async (query) => {
         try {
+            pending.value = true
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
             const response = await axios({
                 url: 'http://lms.test/graphql',
                 method: 'post',
@@ -23,6 +28,8 @@ export const useAPI = () => {
             if (validate(data.errors)) {
                 success.value = data
             }
+
+            pending.value = false
 
         } catch (e) {
             console.log(e.message)
@@ -57,6 +64,7 @@ export const useAPI = () => {
     return {
         apiErrors,
         success,
+        pending,
         load
     }
 }
