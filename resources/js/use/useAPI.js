@@ -3,8 +3,8 @@ import axios from "axios";
 import _camelCase from "lodash/camelCase"
 
 export const useAPI = () => {
-    const apiErrors = ref({})
-    const success = ref(false)
+    const apiErrors = ref(null)
+    const success = ref(null)
     const pending = ref(false)
 
     const load = async (query) => {
@@ -38,8 +38,8 @@ export const useAPI = () => {
     }
 
     const validate = (errors) => {
-        apiErrors.value = {}
-        success.value = false
+        apiErrors.value = null
+        success.value = null
 
         if(errors && Array.isArray(errors)) {
             apiErrors.value = {

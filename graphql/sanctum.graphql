@@ -79,7 +79,7 @@ input VerifyEmailInput {
 }
 
 input ResendEmailVerificationInput {
-    email: String! @rules(apply: ["email"])
+    email: String! @rules(apply: ["required", "email", "exists:users,email"])
     verification_url: VerificationUrlInput
 }
 
