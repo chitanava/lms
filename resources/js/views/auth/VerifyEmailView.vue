@@ -3,45 +3,24 @@ import AuthFormLayout from "@/components/auth/misc/AuthFormLayout.vue";
 import AuthFormHeader from "@/components/auth/misc/AuthFormHeader.vue";
 import SubmitButton from "@/components/auth/form/SubmitButton.vue";
 import LoginLink from "@/components/auth/links/LoginLink.vue";
-import {useAuthStore} from "@/stores/auth.js";
-import {useAPI} from "@/use/useAPI.js";
-import {ref} from "vue";
-import {useRouter} from "vue-router";
 import AuthFormError from "@/components/auth/misc/AuthFormError.vue";
 import AuthFormAlert from "@/components/auth/misc/AuthFormAlert.vue";
+import { useResendEmailVerification } from "@/use/useResendEmailVerification.js";
 
-const store = useAuthStore()
-const showAlert = ref(false)
+const { apiErrors, pending, showAlert, resendEmailVerification } = useResendEmailVerification()
 
-const { apiErrors, success, pending, load } = useAPI()
-
-const router = useRouter()
-
-if(! store.verifyEmailAddress) {
-    router.push({ name: 'login' })
-}
 const handleSubmit = async () => {
-    showAlert.value = false
+    await resendEmailVerification()
+}
+</script>
 
-    const query = `
-            mutation {
-                resendEmailVerification(input: {
-                    email: "${store.verifyEmailAddress}"
-                    verification_url: {
-                        url: "https://my-front-end.com/verify-email?id=__ID__&token=__HASH__"
-                    }
-                }) {
-                    status
-                }
-            }
-            `
+<script>
+import { useVerifyEmail } from "@/use/useVerifyEmail.js";
 
-    await load(query)
-
-    if (success.value && success.value.data.resendEmailVerification.status === 'EMAIL_SENT'){
-        showAlert.value = true
+export default {
+    async beforeRouteEnter(to, from, next) {
+        await useVerifyEmail(to, next)
     }
-
 }
 </script>
 
