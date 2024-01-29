@@ -14,7 +14,7 @@ export const useAPI = () => {
             // await new Promise(resolve => setTimeout(resolve, 2000));
 
             const response = await axios({
-                url: 'http://lms.test/graphql',
+                url: import.meta.env.VITE_API_URL,
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
