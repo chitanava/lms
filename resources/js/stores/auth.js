@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 import {ref} from "vue";
 
 export const useAuthStore = defineStore('auth', () => {
-    const verifyEmailAddress = ref('')
+    const token = ref(null)
+    const verifyEmailAddress = ref(null)
 
-    return { verifyEmailAddress }
+    return { token, verifyEmailAddress }
 })
