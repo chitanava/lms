@@ -1,8 +1,10 @@
 import { useAPI } from "@/use/useAPI.js";
 import _isEmpty from "lodash/isEmpty.js";
 import gql from 'graphql-tag';
+import { abortMessage } from "@/use/useNotFound.js";
 
 export const useVerifyEmail = async (to, next) => {
+
     if (_isEmpty(to.query)) {
         return next()
     }
@@ -33,6 +35,7 @@ export const useVerifyEmail = async (to, next) => {
     await fetchData(verifyEmailMutation, variables)
 
     if (apiErrors.value) {
+        abortMessage.value = apiErrors.value.message
         return next({ name: 'not-found', params: { notFound: '404' } })
     }
 
