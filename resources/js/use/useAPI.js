@@ -1,13 +1,14 @@
 import {ref} from "vue";
 import axios from "axios";
 import _camelCase from "lodash/camelCase"
+import { print } from 'graphql';
 
 export const useAPI = () => {
     const apiErrors = ref(null)
     const success = ref(null)
     const pending = ref(false)
 
-    const load = async (query) => {
+    const fetchData = async (query, variables) => {
         try {
             pending.value = true
 
@@ -20,7 +21,8 @@ export const useAPI = () => {
                     'Content-Type': 'application/json',
                 },
                 data: {
-                    query
+                    query: print(query),
+                    variables
                 }
             })
 
@@ -66,6 +68,6 @@ export const useAPI = () => {
         apiErrors,
         success,
         pending,
-        load
+        fetchData
     }
 }

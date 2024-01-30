@@ -13,8 +13,8 @@ type AccessToken {
 }
 
 input LoginInput {
-    email: String! @rules(apply: ["required", "email"])
-    password: String! @rules(apply: ["required"])
+    email: String @rules(apply: ["required", "email"])
+    password: String @rules(apply: ["required"])
 }
 
 type LogoutResponse {
@@ -79,16 +79,16 @@ input VerifyEmailInput {
 }
 
 input ResendEmailVerificationInput {
-    email: String! @rules(apply: ["required", "email", "exists:users,email"])
+    email: String @rules(apply: ["required", "email", "exists:users,email"])
     verification_url: VerificationUrlInput
 }
 
 input RegisterInput {
-    first_name: String! @rules(apply: ["required"])
-    last_name: String! @rules(apply: ["required"])
-    email: String! @rules(apply: ["bail", "required", "email", "unique:users,email"])
-    password: String! @rules(apply: ["required", "min:6", "confirmed"])
-    password_confirmation: String!
+    first_name: String @rules(apply: ["required"])
+    last_name: String @rules(apply: ["required"])
+    email: String @rules(apply: ["bail", "required", "email", "unique:users,email"])
+    password: String @rules(apply: ["required", "min:6", "confirmed"])
+    password_confirmation: String
     verification_url: VerificationUrlInput
 }
 
@@ -104,7 +104,7 @@ you must also use __EXPIRES__ and __SIGNATURE__
 e.g; `https://my-front-end.com/verify-email?id=__ID__&hash=__HASH__&expires=__EXPIRES__&signature=__SIGNATURE__`
 """
 input VerificationUrlInput {
-    url: String! @rules(apply: ["url"])
+    url: String @rules(apply: ["required", "url"])
 }
 
 input ForgotPasswordInput {

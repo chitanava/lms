@@ -2,6 +2,7 @@ import {reactive} from "vue";
 import {useRouter} from "vue-router";
 import {useAuthStore} from "@/stores/auth.js";
 import {useAPI} from "@/use/useAPI.js";
+import gql from 'graphql-tag';
 
 export const useLogin = () => {
     const state = reactive({
@@ -12,22 +13,26 @@ export const useLogin = () => {
     const router = useRouter()
     const store = useAuthStore()
 
-    const { apiErrors, success, pending, load } = useAPI()
+    const { apiErrors, success, pending, fetchData } = useAPI()
 
     const login = async () => {
-        const query = `
-            mutation {
-                login(input: {
-                    email: "${state.email}"
-                    password: "${state.password}"
-                }) {
+        const loginMutation = gql`
+            mutation Login($input: LoginInput!) {
+                login(input: $input) {
                     token
                     status
                 }
             }
-            `
+        `
 
-        await load(query)
+        const variables = {
+            input: {
+                email: state.email,
+                password: state.password
+            }
+        }
+
+        await fetchData(loginMutation, variables)
 
         if (success.value){
             const { token, status } = success.value.data.login

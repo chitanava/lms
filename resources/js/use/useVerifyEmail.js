@@ -1,5 +1,6 @@
 import { useAPI } from "@/use/useAPI.js";
 import _isEmpty from "lodash/isEmpty.js";
+import gql from 'graphql-tag';
 
 export const useVerifyEmail = async (to, next) => {
     if (_isEmpty(to.query)) {
@@ -12,20 +13,24 @@ export const useVerifyEmail = async (to, next) => {
         return next()
     }
 
-    const { apiErrors, success, load } = useAPI()
+    const { apiErrors, success, fetchData } = useAPI()
 
-    const query = `
-            mutation {
-                verifyEmail(input: {
-                    id: "${id}"
-                    hash: "${token}"
-                }) {
-                    status
-                }
+    const verifyEmailMutation = gql`
+        mutation VerifyEmail($input: VerifyEmailInput!) {
+            verifyEmail(input: $input) {
+                status
             }
-        `
+        }
+    `
 
-    await load(query)
+    const variables = {
+        input: {
+            id,
+            hash: token
+        }
+    }
+
+    await fetchData(verifyEmailMutation, variables)
 
     if (apiErrors.value) {
         return next({ name: 'not-found', params: { notFound: '404' } })
