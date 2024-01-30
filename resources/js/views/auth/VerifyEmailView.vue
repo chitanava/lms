@@ -6,6 +6,8 @@ import LoginLink from "@/components/auth/links/LoginLink.vue";
 import AuthFormError from "@/components/auth/misc/AuthFormError.vue";
 import AuthFormAlert from "@/components/auth/misc/AuthFormAlert.vue";
 import { useResendEmailVerification } from "@/use/useResendEmailVerification.js";
+import AuthFormContent from "@/components/auth/misc/AuthFormContent.vue";
+import AuthFormIntroMessage from "@/components/auth/misc/AuthFormIntroMessage.vue";
 
 const { apiErrors, pending, showAlert, resendEmailVerification } = useResendEmailVerification()
 
@@ -27,10 +29,10 @@ export default {
 <template>
     <AuthFormLayout>
         <AuthFormHeader>Verify Email</AuthFormHeader>
-        <div class="space-y-6">
-            <div class="leading-7">
+        <AuthFormContent :applyForm="false">
+            <AuthFormIntroMessage>
                 <p>Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.</p>
-            </div>
+            </AuthFormIntroMessage>
             <AuthFormAlert v-if="showAlert">
                 <h3 class="font-bold">We have just sent you an email!</h3>
                 <div class="text-xs">A new verification link has been sent to the email address you provided during registration.</div>
@@ -43,6 +45,6 @@ export default {
                     @submit="handleSubmit"/>
             </div>
             <LoginLink/>
-        </div>
+        </AuthFormContent>
     </AuthFormLayout>
 </template>
