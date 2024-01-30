@@ -1,11 +1,9 @@
 <script setup>
+import { abortMessage } from "@/use/useNotFound.js";
 
 </script>
 
 <template>
-    Not Found
+    <h3>Not Found</h3>
+    <p>{{ abortMessage }}</p>
 </template>
-
-<style scoped>
-
-</style>

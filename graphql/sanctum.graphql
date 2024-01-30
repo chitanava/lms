@@ -108,7 +108,7 @@ input VerificationUrlInput {
 }
 
 input ForgotPasswordInput {
-    email: String! @rules(apply: ["email"])
+    email: String @rules(apply: ["required", "email", "exists:users,email"])
     reset_password_url: ResetPasswordUrlInput
 }
 
