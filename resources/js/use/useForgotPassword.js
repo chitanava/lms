@@ -28,7 +28,7 @@ export const useForgotPassword = () => {
             input: {
                 email: state.email,
                 reset_password_url: {
-                    url: "https://lms.test/reset-password?email=__EMAIL__&token=__TOKEN__"
+                    url: import.meta.env.VITE_RESET_PASSWORD_URL
                 }
             }
         }

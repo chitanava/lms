@@ -36,7 +36,7 @@ export const useRegister = () => {
                 password: state.password,
                 password_confirmation: state.passwordConfirmation,
                 verification_url: {
-                    url: "http://lms.test/verify-email?id=__ID__&token=__HASH__"
+                    url: import.meta.env.VITE_VERIFICATION_URL
                 }
             }
         }

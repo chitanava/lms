@@ -1,5 +1,4 @@
 <script setup>
-import { reactive } from "vue";
 import AuthFormLayout from "@/components/auth/misc/AuthFormLayout.vue";
 import AuthFormContent from "@/components/auth/misc/AuthFormContent.vue";
 import AuthFormHeader from "@/components/auth/misc/AuthFormHeader.vue";
