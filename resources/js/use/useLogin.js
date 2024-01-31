@@ -1,8 +1,8 @@
 import {reactive} from "vue";
-import {useRouter} from "vue-router";
 import {useAuthStore} from "@/stores/auth.js";
 import {useAPI} from "@/use/useAPI.js";
 import gql from 'graphql-tag';
+import {useRedirect} from "@/use/useRedirect.js";
 
 export const useLogin = () => {
     const state = reactive({
@@ -10,8 +10,9 @@ export const useLogin = () => {
         password: ''
     })
 
-    const router = useRouter()
     const store = useAuthStore()
+
+    const { redirectToRoute } = useRedirect()
 
     const { apiErrors, success, pending, fetchData } = useAPI()
 
@@ -38,12 +39,15 @@ export const useLogin = () => {
             const { token, status } = success.value.data.login
 
             if(!token && status === 'MUST_VERIFY_EMAIL'){
-                store.verifyEmailAddress = state.email
-                return router.push({ name: 'verify-email' })
+                return redirectToRoute('verify-email', {
+                    data: {
+                        email: state.email
+                    }
+                })
             }
 
             store.token = token
-            return router.push({ name: 'home' })
+            return redirectToRoute('home')
         }
     }
 

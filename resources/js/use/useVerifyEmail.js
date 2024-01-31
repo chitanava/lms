@@ -1,7 +1,7 @@
 import { useAPI } from "@/use/useAPI.js";
 import _isEmpty from "lodash/isEmpty.js";
 import gql from 'graphql-tag';
-import { abortMessage } from "@/use/useNotFound.js";
+import { useRedirect } from "@/use/useRedirect.js"
 
 export const useVerifyEmail = async (to, next) => {
 
@@ -16,6 +16,7 @@ export const useVerifyEmail = async (to, next) => {
     }
 
     const { apiErrors, success, fetchData } = useAPI()
+    const { setRedirectMessage } = useRedirect()
 
     const verifyEmailMutation = gql`
         mutation VerifyEmail($input: VerifyEmailInput!) {
@@ -35,7 +36,7 @@ export const useVerifyEmail = async (to, next) => {
     await fetchData(verifyEmailMutation, variables)
 
     if (apiErrors.value) {
-        abortMessage.value = apiErrors.value.message
+        setRedirectMessage(apiErrors.value.message)
         return next({ name: 'not-found', params: { notFound: '404' } })
     }
 

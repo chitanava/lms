@@ -1,6 +1,8 @@
 <script setup>
-import { abortMessage } from "@/use/useNotFound.js";
+import { useRedirect } from "@/use/useRedirect.js";
 
+const { getRedirectMessage } = useRedirect()
+const abortMessage = getRedirectMessage()
 </script>
 
 <template>

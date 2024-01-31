@@ -1,12 +1,15 @@
 import {useAPI} from "@/use/useAPI.js";
-import {useAuthStore} from "@/stores/auth.js";
 import {ref} from "vue";
 import gql from 'graphql-tag';
+import { useRedirect } from "@/use/useRedirect.js";
 
 export const useResendEmailVerification = () => {
-    const store = useAuthStore()
     const showAlert = ref(false)
+
     const { apiErrors, success, pending, fetchData } = useAPI()
+
+    const { getRedirectData } = useRedirect()
+    const { email } = getRedirectData()
 
     const resendEmailVerification = async () => {
         showAlert.value = false
@@ -21,7 +24,7 @@ export const useResendEmailVerification = () => {
 
         const variables = {
             input: {
-                email: store.verifyEmailAddress,
+                email,
                 verification_url: {
                     url: "http://lms.test/verify-email?id=__ID__&token=__HASH__"
                 }

@@ -1,19 +1,15 @@
 import {reactive, ref} from "vue";
-import {useRouter} from "vue-router";
 import {useAPI} from "@/use/useAPI.js";
 import gql from 'graphql-tag';
-import {useNotFound} from "@/use/useNotFound.js";
+import { useRedirect } from "@/use/useRedirect.js";
 
 export const useForgotPassword = () => {
     const showAlert = ref(false)
-
-    const { abort } = useNotFound()
+    const { redirectToRoute } = useRedirect()
 
     const state = reactive({
         email: ''
     })
-
-    const router = useRouter()
 
     const { apiErrors, success, pending, fetchData } = useAPI()
 
@@ -40,7 +36,12 @@ export const useForgotPassword = () => {
         await fetchData(forgotPasswordMutation, variables)
 
         if(apiErrors.value && !apiErrors.value.validation){
-            abort(apiErrors.value.message)
+            redirectToRoute('not-found', {
+                message: apiErrors.value.message,
+                params: {
+                    notFound: '404'
+                }
+            })
         }
 
         if (success.value){
