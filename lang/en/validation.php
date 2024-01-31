@@ -184,7 +184,8 @@ return [
         'input.email' => 'email',
         'input.first_name' => 'first name',
         'input.last_name' => 'last name',
-        'input.password' => 'password'
+        'input.password' => 'password',
+        'input.token' => 'token'
     ],
 
 ];

@@ -8,12 +8,21 @@ import SubmitButton from "@/components/auth/form/SubmitButton.vue";
 import RegisterLink from "@/components/auth/links/RegisterLink.vue";
 import ForgotPasswordLink from "@/components/auth/links/ForgotPasswordLink.vue";
 import {useLogin} from "@/use/useLogin.js";
-
+import {useRedirect} from "@/use/useRedirect.js";
+import AuthFormAlert from "@/components/auth/misc/AuthFormAlert.vue";
+import {ref} from "vue";
 
 const { state, apiErrors, success, pending, login } = useLogin()
 
+const resetPasswordMessage = ref('')
+
+const { getRedirectMessage } = useRedirect()
+resetPasswordMessage.value = getRedirectMessage()
+
 const handleSubmit = async () => {
-  await login()
+    resetPasswordMessage.value = ''
+
+    await login()
 }
 </script>
 
@@ -21,6 +30,7 @@ const handleSubmit = async () => {
     <AuthFormLayout>
         <AuthFormHeader>Login to your account</AuthFormHeader>
         <AuthFormContent @submit="handleSubmit" novalidate>
+            <AuthFormAlert v-if="resetPasswordMessage" :message="resetPasswordMessage" />
             <TextInput
                 v-model="state.email"
                 label="Email"
