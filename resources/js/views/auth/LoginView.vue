@@ -12,7 +12,7 @@ import {useRedirect} from "@/use/useRedirect.js";
 import AuthFormAlert from "@/components/auth/misc/AuthFormAlert.vue";
 import {ref} from "vue";
 
-const { state, apiErrors, success, pending, login } = useLogin()
+const { state, apiErrors, success, pending, loginProcess, clientErrors } = useLogin()
 
 const resetPasswordMessage = ref('')
 
@@ -22,7 +22,7 @@ resetPasswordMessage.value = getRedirectMessage()
 const handleSubmit = async () => {
     resetPasswordMessage.value = ''
 
-    await login()
+    await loginProcess()
 }
 </script>
 
@@ -36,12 +36,12 @@ const handleSubmit = async () => {
                 label="Email"
                 type="email"
                 required
-                :apiValidationError="apiErrors?.validation ? apiErrors?.validation?.email : apiErrors?.message"/>
+                :apiValidationError="clientErrors?.email || (apiErrors?.validation ? apiErrors?.validation?.email : apiErrors?.message)"/>
             <PasswordInput
                 v-model="state.password"
                 label="Password"
                 required
-                :apiValidationError="apiErrors?.validation?.password"/>
+                :apiValidationError="clientErrors?.password || apiErrors?.validation?.password"/>
             <ForgotPasswordLink/>
             <SubmitButton label="Login" :pending="pending"/>
             <RegisterLink/>

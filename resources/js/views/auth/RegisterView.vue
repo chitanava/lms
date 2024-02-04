@@ -8,10 +8,10 @@ import SubmitButton from "@/components/auth/form/SubmitButton.vue";
 import LoginLink from "@/components/auth/links/LoginLink.vue";
 import { useRegister } from "@/use/useRegister.js";
 
-const { state, apiErrors, pending, register } = useRegister()
+const { state, apiErrors, pending, registerProcess, clientErrors } = useRegister()
 
 const handleSubmit = async () => {
-    await register()
+    await registerProcess()
 }
 </script>
 
@@ -24,25 +24,25 @@ const handleSubmit = async () => {
                     v-model="state.firstName"
                     label="First name"
                     required
-                    :apiValidationError="apiErrors?.validation?.firstName"/>
+                    :apiValidationError="clientErrors?.firstName || apiErrors?.validation?.firstName"/>
                 <TextInput
                     v-model="state.lastName"
                     label="Last name"
                     required
-                    :apiValidationError="apiErrors?.validation?.lastName"/>
+                    :apiValidationError="clientErrors?.lastName || apiErrors?.validation?.lastName"/>
             </div>
             <TextInput
                 v-model="state.email"
                 label="Email"
                 type="email"
                 required
-                :apiValidationError="apiErrors?.validation?.email"/>
+                :apiValidationError="clientErrors?.email || apiErrors?.validation?.email"/>
             <PasswordInput
                 v-model="state.password"
                 label="Password"
                 passwordMeter
                 required
-                :apiValidationError="apiErrors?.validation?.password"/>
+                :apiValidationError="clientErrors?.password || apiErrors?.validation?.password"/>
             <PasswordInput v-model="state.passwordConfirmation" label="Password confirmation" required />
             <SubmitButton label="Register" :pending="pending"/>
             <LoginLink/>
