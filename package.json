@@ -16,6 +16,8 @@
         "vite": "^5.0.11"
     },
     "dependencies": {
+        "@vuelidate/core": "^2.0.3",
+        "@vuelidate/validators": "^2.0.4",
         "graphql": "^16.8.1",
         "graphql-tag": "^2.12.6",
         "lodash": "^4.17.21",

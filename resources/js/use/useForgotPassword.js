@@ -2,6 +2,8 @@ import {reactive, ref} from "vue";
 import {useAPI} from "@/use/useAPI.js";
 import gql from 'graphql-tag';
 import { useRedirect } from "@/use/useRedirect.js";
+import {useClientValidation} from "@/use/useClientValidation.js";
+import { required, email, helpers } from '@vuelidate/validators'
 
 export const useForgotPassword = () => {
     const showAlert = ref(false)
@@ -11,7 +13,32 @@ export const useForgotPassword = () => {
         email: ''
     })
 
+    const { clientErrors, transformToErrorObject, validate } = useClientValidation()
     const { apiErrors, success, pending, fetchData } = useAPI()
+
+    const rules = {
+        email: {
+            required: helpers.withMessage(({$property}) => `v$ The ${$property} field is required.`, required),
+            email: helpers.withMessage(({$property}) => `v$ The ${$property} field must be a valid email address.`, email),
+            $lazy: true
+        }
+    }
+
+    const v$ = validate(rules, state)
+
+    const forgotPasswordProcess = async () => {
+        showAlert.value = false
+
+        const isFormCorrect = await v$.value.$validate()
+
+        if (!isFormCorrect) {
+            clientErrors.value = transformToErrorObject(v$.value)
+            return
+        }
+
+        await forgotPassword()
+        clientErrors.value = null
+    }
 
     const forgotPassword = async () => {
         showAlert.value = false
@@ -55,5 +82,5 @@ export const useForgotPassword = () => {
         }
     }
 
-    return { showAlert, state, apiErrors, success, pending, forgotPassword }
+    return { showAlert, state, apiErrors, success, pending, forgotPassword, forgotPasswordProcess, clientErrors }
 }

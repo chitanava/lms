@@ -9,10 +9,10 @@ import AuthFormIntroMessage from "@/components/auth/misc/AuthFormIntroMessage.vu
 import {useForgotPassword} from "@/use/useForgotPassword.js";
 import AuthFormAlert from "@/components/auth/misc/AuthFormAlert.vue";
 
-const { showAlert, state, apiErrors, success, pending, forgotPassword } = useForgotPassword()
+const { state, clientErrors, apiErrors, showAlert, pending, forgotPasswordProcess } = useForgotPassword()
 
 const handleSubmit = async () => {
-    await forgotPassword()
+    await forgotPasswordProcess()
 }
 </script>
 
@@ -32,7 +32,7 @@ const handleSubmit = async () => {
                 label="Email"
                 type="email"
                 required
-                :apiValidationError="apiErrors?.validation?.email"/>
+                :apiValidationError="clientErrors?.email || apiErrors?.validation?.email"/>
             <SubmitButton
                 label="Email Password Reset Link"
                 :pending="pending"/>
