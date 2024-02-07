@@ -2,18 +2,45 @@ import {useAPI} from "@/use/useAPI.js";
 import {ref} from "vue";
 import gql from 'graphql-tag';
 import { useRedirect } from "@/use/useRedirect.js";
+import {useClientValidation} from "@/use/useClientValidation.js";
+import {email, helpers, required} from "@vuelidate/validators";
 
 export const useResendEmailVerification = () => {
     const showAlert = ref(false)
 
+    const { clientErrors, transformToErrorObject, validate } = useClientValidation()
     const { apiErrors, success, pending, fetchData } = useAPI()
 
     const { getRedirectData } = useRedirect()
-    const { email } = getRedirectData()
+    const { email: _email } = getRedirectData()
 
-    const resendEmailVerification = async () => {
+    const rules = {
+        email: {
+            required: helpers.withMessage(({$property}) => `v$ The ${$property} field is required.`, required),
+            email: helpers.withMessage(({$property}) => `v$ The ${$property} field must be a valid email address.`, email),
+            $lazy: true
+        }
+    }
+
+    const v$ = validate(rules, {
+        email: _email
+    })
+
+    const resendEmailVerificationProcess = async () => {
         showAlert.value = false
 
+        const isFormCorrect = await v$.value.$validate()
+
+        if (!isFormCorrect) {
+            clientErrors.value = transformToErrorObject(v$.value)
+            return
+        }
+
+        await resendEmailVerification()
+        clientErrors.value = null
+    }
+
+    const resendEmailVerification = async () => {
         const resendEmailVerificationMutation = gql`
             mutation ResendEmailVerification($input: ResendEmailVerificationInput!) {
                 resendEmailVerification(input: $input) {
@@ -24,7 +51,7 @@ export const useResendEmailVerification = () => {
 
         const variables = {
             input: {
-                email,
+                email: _email,
                 verification_url: {
                     url: import.meta.env.VITE_VERIFICATION_URL
                 }
@@ -42,5 +69,5 @@ export const useResendEmailVerification = () => {
         }
     }
 
-    return { apiErrors, success, pending, showAlert, resendEmailVerification }
+    return { apiErrors, success, pending, showAlert, resendEmailVerification, resendEmailVerificationProcess, clientErrors }
 }

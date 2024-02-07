@@ -9,10 +9,10 @@ import { useResendEmailVerification } from "@/use/useResendEmailVerification.js"
 import AuthFormContent from "@/components/auth/misc/AuthFormContent.vue";
 import AuthFormIntroMessage from "@/components/auth/misc/AuthFormIntroMessage.vue";
 
-const { apiErrors, pending, showAlert, resendEmailVerification } = useResendEmailVerification()
+const { apiErrors, pending, showAlert, clientErrors, resendEmailVerificationProcess } = useResendEmailVerification()
 
 const handleSubmit = async () => {
-    await resendEmailVerification()
+    await resendEmailVerificationProcess()
 }
 </script>
 
@@ -38,7 +38,7 @@ export default {
                 <div class="text-xs">A new verification link has been sent to the email address you provided during registration.</div>
             </AuthFormAlert>
             <div>
-                <AuthFormError v-if="apiErrors?.validation?.email">{{ apiErrors.validation?.email }}</AuthFormError>
+                <AuthFormError v-if="clientErrors?.email || apiErrors?.validation?.email">{{ clientErrors?.email || apiErrors.validation?.email }}</AuthFormError>
                 <SubmitButton
                     :pending="pending"
                     label="Resend Verification Email"

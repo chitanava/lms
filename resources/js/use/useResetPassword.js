@@ -1,11 +1,15 @@
-import {reactive} from "vue";
+import {computed, reactive} from "vue";
 import {useAPI} from "@/use/useAPI.js";
 import gql from 'graphql-tag';
 import {useRoute} from "vue-router";
 import {useRedirect} from "@/use/useRedirect.js";
+import {useClientValidation} from "@/use/useClientValidation.js";
+import {email, helpers, minLength, required, sameAs} from "@vuelidate/validators";
 
 export const useResetPassword = () => {
     const state = reactive({
+        email: '',
+        token: '',
         password: '',
         passwordConfirmation: ''
     })
@@ -14,9 +18,45 @@ export const useResetPassword = () => {
 
     const route = useRoute()
 
-    const { email, token } = route.query
+    const { email: _email, token } = route.query
+    state.email = _email
+    state.token = token
 
+    const { clientErrors, transformToErrorObject, validate } = useClientValidation()
     const { apiErrors, success, pending, fetchData } = useAPI()
+
+    const rules = computed(() => ({
+        email: {
+            required: helpers.withMessage(({$property}) => `v$ The ${$property} field is required.`, required),
+            email: helpers.withMessage(({$property}) => `v$ The ${$property} field must be a valid email address.`, email),
+            $lazy: true
+        },
+        token: {
+            required: helpers.withMessage(({$property}) => `v$ The ${$property} field is required.`, required),
+            $lazy: true
+        },
+        password: {
+            required: helpers.withMessage(({$property}) => `v$ The ${$property} field is required.`, required),
+            minLength: helpers.withMessage(({$property}) => `v$ The ${$property} field must be at least 6 characters.`, minLength(6)),
+            sameAsRef: helpers.withMessage(({$property}) => `v$ The ${$property} field confirmation does not match.`, sameAs(state.passwordConfirmation)),
+            $lazy: true
+        },
+    }))
+
+    const v$ = validate(rules, state)
+
+    const resetPasswordProcess = async () => {
+        const isFormCorrect = await v$.value.$validate()
+
+        if (!isFormCorrect) {
+            clientErrors.value = transformToErrorObject(v$.value)
+
+            return
+        }
+
+        await resetPassword()
+        clientErrors.value = null
+    }
 
     const resetPassword = async () => {
         const resetPasswordMutation = gql`
@@ -30,7 +70,7 @@ export const useResetPassword = () => {
 
         const variables = {
             input: {
-                email,
+                email: _email,
                 token,
                 password: state.password,
                 password_confirmation: state.passwordConfirmation
@@ -50,5 +90,5 @@ export const useResetPassword = () => {
         }
     }
 
-    return { state, apiErrors, success, pending, resetPassword }
+    return { state, apiErrors, success, pending, resetPassword, resetPasswordProcess, clientErrors }
 }

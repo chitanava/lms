@@ -50,7 +50,7 @@ export const useRegister = () => {
 
         if (!isFormCorrect) {
             clientErrors.value = transformToErrorObject(v$.value)
-            // apiErrors.value = null
+
             return
         }
 
