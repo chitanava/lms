@@ -5,6 +5,7 @@ import {useRoute} from "vue-router";
 import {useRedirect} from "@/use/useRedirect.js";
 import {useClientValidation} from "@/use/useClientValidation.js";
 import {email, helpers, minLength, required, sameAs} from "@vuelidate/validators";
+import {trans} from "laravel-vue-i18n";
 
 export const useResetPassword = () => {
     const state = reactive({
@@ -27,18 +28,18 @@ export const useResetPassword = () => {
 
     const rules = computed(() => ({
         email: {
-            required: helpers.withMessage(({$property}) => `v$ The ${$property} field is required.`, required),
-            email: helpers.withMessage(({$property}) => `v$ The ${$property} field must be a valid email address.`, email),
+            required: helpers.withMessage(({$property}) => trans('validation.required', { attribute: $property }), required),
+            email: helpers.withMessage(({$property}) => trans('validation.email', { attribute: $property }), email),
             $lazy: true
         },
         token: {
-            required: helpers.withMessage(({$property}) => `v$ The ${$property} field is required.`, required),
+            required: helpers.withMessage(({$property}) => trans('validation.required', { attribute: $property }), required),
             $lazy: true
         },
         password: {
-            required: helpers.withMessage(({$property}) => `v$ The ${$property} field is required.`, required),
-            minLength: helpers.withMessage(({$property}) => `v$ The ${$property} field must be at least 6 characters.`, minLength(6)),
-            sameAsRef: helpers.withMessage(({$property}) => `v$ The ${$property} field confirmation does not match.`, sameAs(state.passwordConfirmation)),
+            required: helpers.withMessage(({$property}) => trans('validation.required', { attribute: $property }), required),
+            minLength: helpers.withMessage(({$property}) => trans('validation.min.string', { attribute: $property, min: '6' }), minLength(6)),
+            sameAsRef: helpers.withMessage(({$property}) => trans('validation.confirmed', { attribute: $property }), sameAs(state.passwordConfirmation)),
             $lazy: true
         },
     }))

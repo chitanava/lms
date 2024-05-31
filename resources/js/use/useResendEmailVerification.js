@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { useRedirect } from "@/use/useRedirect.js";
 import {useClientValidation} from "@/use/useClientValidation.js";
 import {email, helpers, required} from "@vuelidate/validators";
+import {trans} from "laravel-vue-i18n";
 
 export const useResendEmailVerification = () => {
     const showAlert = ref(false)
@@ -16,8 +17,8 @@ export const useResendEmailVerification = () => {
 
     const rules = {
         email: {
-            required: helpers.withMessage(({$property}) => `v$ The ${$property} field is required.`, required),
-            email: helpers.withMessage(({$property}) => `v$ The ${$property} field must be a valid email address.`, email),
+            required: helpers.withMessage(({$property}) => trans('validation.required', { attribute: $property }), required),
+            email: helpers.withMessage(({$property}) => trans('validation.email', { attribute: $property }), email),
             $lazy: true
         }
     }
